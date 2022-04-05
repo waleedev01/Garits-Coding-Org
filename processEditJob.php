@@ -58,7 +58,8 @@ if($timeSpent != null){
 
 
 $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
-header("location: $location"); 
+header("location: $location");
+
 
 
 ?>
