@@ -9,15 +9,30 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+?>
 
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<head>
+<style>
+        body{text-align: center; }
+</style>
+<body>
+    <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
+    <p>
+        <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
+    <meta charset="UTF-8">
 
+<?php
 if (isset($_POST['update'])) {
     $pick_job_id = $_POST['update'];   
 }
 
 ?>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
 <form action = 'processEditJob.php' method = 'post'>
   <div class="form-group">
     <label for="exampleInputEmail1">Job Id: <?php echo $pick_job_id; ?></label>
