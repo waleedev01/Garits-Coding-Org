@@ -28,6 +28,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
+        <a href="<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
+        <a href="vehicle/searchVehicle.php" class="btn btn-secondary ml-3">Vehicle list</a>
+
         <?php
             $query = "SELECT job_id,job_type,status,book_in_date,customer_id,registration_number FROM Job where status = 'pending' AND username != '$username'"; //You don't need a ; like you do in SQL
             $result = mysqli_query($conn, $query);

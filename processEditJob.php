@@ -56,6 +56,20 @@ if($timeSpent != null){
     ECHO $result;
 }
 
+if($taskId!=null){
+    $query = "INSERT INTO Task_performed (job_id,task_id,date_performed) VALUES (?,?,?)";
+    $stmt = $conn->prepare($query);
+    $date = "2022";
+    $stmt->bind_param('iis', $pick_job_id, $taskId,$date);
+    /* Execute the statement */
+    $stmt->execute();
+    $row = $stmt->affected_rows;
+    if ($row > 0) { 
+        echo "data inserted";
+    } else {
+        "error";
+    }
+}
 
 $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
 header("location: $location");
