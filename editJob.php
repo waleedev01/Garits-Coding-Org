@@ -31,7 +31,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 if (isset($_POST['update'])) {
     $pick_job_id = $_POST['update'];   
 }
+    $query = "SELECT description FROM Task";
+    $resultTasks = $conn->query($query);
 
+    $query = "SELECT part_name FROM Stock";
+    $resultParts = $conn->query($query);
 ?>
 <form action = 'processEditJob.php' method = 'post'>
   <div class="form-group">
@@ -40,19 +44,22 @@ if (isset($_POST['update'])) {
   </div>
   <div class="form-group">
     <label for="timeSpent">Time Spent</label>
-    <input type="number" class="form-control" name="timeSpent" placeholder="Enter time spent in job">
+    <input type="number" class="form-control" required name="timeSpent" placeholder="Enter time spent in job">
   </div>
   <div class="form-group">
     <label for="updateStatus">Update Status</label>
-    <input type="text" class="form-control" name="updateStatus" placeholder="Job status">
+    <input type="text" class="form-control" required name="updateStatus" placeholder="Job status">
   </div>
   <div class="form-group">
     <label for="addStock">Add Stock Id</label>
-    <input type="text" class="form-control" name="addStock" placeholder="Enter stock id">
+    <select name="addStock"  class="form-control" required>
+            <option disabled>Choose...</option>
+            
+    </select>
   </div>
   <div class="form-group">
     <label for="addTask">Add Task Id</label>
-    <input type="text" class="form-control" name="addTask" placeholder="Enter task id">
+    <input type="text" class="form-control" required name="addTask" placeholder="Enter task id">
   </div>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
