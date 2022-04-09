@@ -27,8 +27,7 @@ $result = mysqli_query($conn, $query);
 while ($row = mysqli_fetch_array($result)){
     $hourly_rate = $row['hourly_rate'];
 }  
-echo "Hourly rate\n";
-echo $hourly_rate;
+
 $totalMechanic = $hourly_rate * $time_spent;
 if($job_type=='repair'){
     $query = "SELECT item_id FROM Stock_used  WHERE job_id = '$job_id'";
@@ -38,8 +37,6 @@ if($job_type=='repair'){
         $item_id[] = $row['item_id'];
 
     for($i = 0;$i<count($item_id);$i++){
-        echo "Item id\n";
-        echo $item_id[$i];
         $query = "SELECT price FROM Stock  WHERE item_id = '$item_id[$i]'";
         $result = mysqli_query($conn, $query);
         while ($row = mysqli_fetch_array($result)){
@@ -61,10 +58,17 @@ if($job_type=='repair'){
 $query2 = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job  WHERE job_id = '$job_id'";
 $result2 = mysqli_query($conn, $query2);
 $today = date("Y/m/d");
-$query = "INSERT INTO Invoice (date_created,is_paid,job_id,customer_id) VALUES (?,?,?,?)";
+$query = "INSERT INTO Invoice (date_created,is_paid,amount,job_id,customer_id) VALUES (?,?,?,?,?)";
 $stmt = $conn->prepare($query);
+$MoT_price = 66;
+$anual_price = 114;
 $is_paid = 0;
-$stmt->bind_param('siii',$today,$is_paid,$job_id,$customer_id);
+if($job_type=='repair')
+    $stmt->bind_param('sidii',$today,$is_paid,$totalJobWithVat,$job_id,$customer_id);
+if($job_type=='MoT')
+    $stmt->bind_param('sidii',$today,$is_paid,$MoT_price,$job_id,$customer_id);
+if($job_type=='annual service')
+    $stmt->bind_param('sidii',$today,$is_paid,$anual_price,$job_id,$customer_id);
 /* Execute the statement */
 $stmt->execute();
 $row = $stmt->affected_rows;
@@ -336,7 +340,11 @@ while ($row = mysqli_fetch_array($result5)){
                             echo "<td>".$row['registration_number']."</td>";
                             echo "<td>".$row['username']."</td>";
                             echo "<td>$date_created</td>";
-                                echo "<td>Yes on.$date_paid.</td>";
+                            if($is_paid==0)
+                            echo "<td><input type='submit' name='pay' value='" . $row['job_id'] . "' /><br/>Pay</td>";
+                             else
+                            echo "<td>Yes on.$date_paid.</td>";
+                        echo "</tr>";
                             echo "</tr>";
                     echo"</form>";           
                         }

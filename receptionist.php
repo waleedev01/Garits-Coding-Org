@@ -27,6 +27,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <a href="job/viewJobs.php" class="btn btn-secondary ml-3">Jobs list</a>
+        <a href="stock/viewSpareParts.php" class="btn btn-secondary ml-3">Spare Parts</a>
+        <a href="customer/viewCustomers.php" class="btn btn-secondary ml-3">Customers</a>
+
         <meta charset="UTF-8">
     <div class=card-deck>
 
@@ -175,5 +178,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
             <a href="discount/createDiscount.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">View Invoices</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="invoice/viewInvoices.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  

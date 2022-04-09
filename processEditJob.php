@@ -18,14 +18,14 @@ $taskId = $conn->real_escape_string($_POST["addTask"]);
 $timeSpent = $conn->real_escape_string($_POST["timeSpent"]);
 
 if($taskId!=null){
-    $query = "UPDATE Task_Used SET job_id = '$pick_job_id' AND task_id = '$taskId'";
+    $query = "UPDATE Task_Used SET job_id = '$pick_job_id', task_id = '$taskId'";
     $result = mysqli_query($conn, $query);
 }
 
 if($stockId!=null){
     $query = "INSERT INTO Stock_used (job_id,item_id,date_used) VALUES (?,?,?)";
     $stmt = $conn->prepare($query);
-    $date = "2022";
+    $date = date("Y-m-d");
     $stmt->bind_param('iis', $pick_job_id, $stockId,$date);
     /* Execute the statement */
     $stmt->execute();

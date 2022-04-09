@@ -59,6 +59,7 @@ $tmp = false;//check if it has invoice
                 echo "<th>Registration Number</th>";
                 echo "<th>Mechanic Id</th>";
                 echo "<th>Invoice</th>";
+
                 echo "</tr>";
           
                 if ($result->num_rows > 0) {
@@ -88,7 +89,6 @@ $tmp = false;//check if it has invoice
                             echo "<td><input type='submit' name='Create' value='" . $row['job_id'] . "' /><br/>Create</td>";
                         else
                             echo "<td><input type='submit' name='View' value='" . $row['job_id'] . "' /><br/>View</td>";
-
                         echo "</tr>";
                         echo"</form>";           
                     }

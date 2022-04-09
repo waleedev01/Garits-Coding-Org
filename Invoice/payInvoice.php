@@ -16,7 +16,10 @@ if (isset($_POST['pay'])) {
 $today = date("Y/m/d");
 $query3 = "UPDATE Invoice SET is_paid = '1', date_paid = '$today' where job_id = '$job_id'";
 $result3 = mysqli_query($conn, $query3);
+
 echo "<script type='text/javascript'>alert('Payment Recorded');</script>";
 $location="/invoice/produceInvoice.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
 header("location: $location");
+
+
 ?>

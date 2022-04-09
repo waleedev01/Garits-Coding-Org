@@ -10,6 +10,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 $today = date("Y-m-d");
+
 ?>
 
 <!DOCTYPE html>
@@ -46,10 +47,22 @@ $today = date("Y-m-d");
                 echo "<td>Vehicle Report</td>";
                 echo "<td><input type=number name='month' max=12 min=1></td>";
                 echo "<td><input type=number name='year' value=2022 max=2022 min=2020></td>";
-                echo "<td><input class='form-check-input' type='radio' name='overall' id='overall'>
+                echo "<td><input class='form-check-input' type='radio' checked disabled name='overall' id='overall'>
                 <label class='form-check-label' for='overall'></td>";
                 echo "<td><input type='submit' name='CreateJobs'><br/></td>";
+                echo"</form>";
                 echo "</tr>";
+                echo "<tr>";
+                echo "<td>Stock Report</td>";
+                echo"<form action = 'processStockReport.php' method='get'>";  
+                echo "<td><input type=date required name='startDate' max=$today></td>";
+                echo "<td><input type=date required max=$today name='endDate'></td>";
+                echo "<td><input class='form-check-input' type='radio' checked disabled name='generate' id='overall'>
+                <label class='form-check-label' for='overall'></td>";
+                echo "<td><input type='submit' name='CreateStockReport'><br/></td>";
+                echo "</tr>";
+                echo"</form>";
+
                 echo"</form>"; 
                 echo "</table>";
                 echo "</div>";
