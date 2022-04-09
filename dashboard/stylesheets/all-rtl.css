@@ -2385,7 +2385,7 @@ ul#docs-list > li {
     left: 0.25rem;
     color: #333333;
     opacity: 0.3; }
-    /* line 87, /home/bitnami/projects/apachefriends-web/bower_components/foundation/scss/foundation/components/_alert-boxes.scss */
+    /* line 87, /home/bitnami/projects/apachefriends-web/bower_components/foundation/scss/foundation/components/_-boxes.scss */
     .alert-box .close:hover, .sendgrid-subscription-widget .response.sent .close:hover, .sendgrid-subscription-widget .response.error .close:hover, .sendgrid-subscription-widget .response.success .close:hover, .alert-box .close:focus, .sendgrid-subscription-widget .response.sent .close:focus, .sendgrid-subscription-widget .response.error .close:focus, .sendgrid-subscription-widget .response.success .close:focus {
       opacity: 0.5; }
   /* line 107, /home/bitnami/projects/apachefriends-web/bower_components/foundation/scss/foundation/components/_alert-boxes.scss */
