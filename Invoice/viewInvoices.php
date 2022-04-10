@@ -69,6 +69,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 }
                 
                 echo "</table>";
-    
+                echo"
+                <button onclick=fnExcelReport6()>
+                   <span class='glyphicon glyphicon-download'></span>
+                   Download Report
+                </button>";
             echo "</div>";
             echo "</div>";

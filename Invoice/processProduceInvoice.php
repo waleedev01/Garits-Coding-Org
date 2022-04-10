@@ -29,10 +29,10 @@ while ($row = mysqli_fetch_array($result)){
 }  
 
 $totalMechanic = $hourly_rate * $time_spent;
-if($job_type=='repair'){
+if($job_type=='repair' || $job_type == 'stock_order'){
     $query = "SELECT item_id FROM Stock_used  WHERE job_id = '$job_id'";
     $result = mysqli_query($conn, $query);
-
+    if($job_type=='repair'){
     while ($row = mysqli_fetch_array($result))
         $item_id[] = $row['item_id'];
 
@@ -52,7 +52,20 @@ if($job_type=='repair'){
     $totalPartsPrice *= 1.20;
     $totalMechanic *= 1.20;
     $totalJobWithVat = $totalMechanic+$totalPartsPrice;
+    }
+    else{
+        while ($row = mysqli_fetch_array($result))
+            $item_id = $row['item_id'];
+        $query9 = "SELECT price FROM Stock  WHERE item_id = '$item_id'";
+        $result9= mysqli_query($conn, $query9);
+        while ($row = mysqli_fetch_array($result9))
+            $priceStockOrder = $row['price'];
+        $totalPartsPrice = $priceStockOrder;
+        $totalPartsPrice *= 1.30;
+        $totalPartsPrice *= 1.20;
+        $totalJobWithVat = $totalPartsPrice;
 
+    }
    
 }
 $query2 = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job  WHERE job_id = '$job_id'";
@@ -63,7 +76,7 @@ $stmt = $conn->prepare($query);
 $MoT_price = 66;
 $anual_price = 114;
 $is_paid = 0;
-if($job_type=='repair')
+if($job_type=='repair' || $job_type == 'stock_order')
     $stmt->bind_param('sidii',$today,$is_paid,$totalJobWithVat,$job_id,$customer_id);
 if($job_type=='MoT')
     $stmt->bind_param('sidii',$today,$is_paid,$MoT_price,$job_id,$customer_id);
@@ -77,18 +90,21 @@ if ($row > 0) {
 } else {
     "error";
 }
-$query5 = "SELECT is_paid, date_paid, date_created FROM Invoice  WHERE job_id = '$job_id'";
+$query5 = "SELECT invoice_id,is_paid, date_paid, date_created FROM Invoice  WHERE job_id = '$job_id'";
 $result5 = mysqli_query($conn, $query5);
 while ($row = mysqli_fetch_array($result5)){
     $is_paid = $row['is_paid'];
     $date_paid = $row['date_paid'];
     $date_created = $row['date_created'];
+    $invoice_id = $row['invoice_id'];
 
 }  
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+<script type="text/javascript" src="print.js"></script>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -104,7 +120,7 @@ while ($row = mysqli_fetch_array($result5)){
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <meta charset="UTF-8">
         <?php
-        if($job_type == 'repair'){
+        if($job_type == 'repair' || $job_type == 'stock_order'){
         echo "<h3 class='my-5'>Completed Jobs</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
@@ -114,9 +130,6 @@ while ($row = mysqli_fetch_array($result5)){
                 echo "<tr>";
                 echo "<th>Job id</th>";
                 echo "<th>Job type</th>";
-                echo "<th>Status</th>";
-                echo "<th>Estimate amount</th>";
-                echo "<th>Book in date</th>";
                 echo "<th>Time Spent</th>";
                 echo "<th>Total parts price</th>";
                 echo "<th>Mechanic rate</th>";
@@ -126,6 +139,8 @@ while ($row = mysqli_fetch_array($result5)){
                 echo "<th>Registration Number</th>";
                 echo "<th>Mechanic Id</th>";
                 echo "<th>Date Created</th>";
+                echo "<th>Cash</th>";
+                echo "<th>Card</th>";
                 echo "<th>Paid</th>";
                 echo "</tr>";
                 if ($result2->num_rows > 0) {
@@ -135,9 +150,6 @@ while ($row = mysqli_fetch_array($result5)){
                         echo "<tr>";
                         echo "<td>" . $row["job_id"] . "</td>";
                         echo "<td>" . $row["job_type"] . "</td>";
-                        echo "<td>" . $row["status"] . "</td>";
-                        echo "<td>" . $row["estimate_amount"] . "</td>";
-                        echo "<td>" . $row['book_in_date'] . "</td>";
                         echo "<td>" . $row['time_spent'] . "</td>";
                         echo "<td>" . $totalPartsPrice. "</td>";
                         echo "<td>" . $hourly_rate. "</td>";
@@ -147,8 +159,13 @@ while ($row = mysqli_fetch_array($result5)){
                         echo "<td>".$row['registration_number']."</td>";
                         echo "<td>".$row['username']."</td>";
                         echo "<td>$date_created</td>";
-                        if($is_paid==0)
-                            echo "<td><input type='submit' name='pay' value='" . $row['job_id'] . "' /><br/>Pay</td>";
+                        if($is_paid==0){
+                            echo "<td><input class='form-check-input' type='radio' value = 'cash' checked name='payment_type' id='cash'>
+                            <label class='form-check-label' for='cash'></td>";
+                            echo "<td><input class='form-check-input' type='radio' value = 'card' name='payment_type' id='card'>
+                            <label class='form-check-label' for='card'></td>";
+                            echo "<td><input type='submit' name='pay' value='$invoice_id' /><br/>Pay</td>";
+                        }
                         else
                             echo "<td>Yes on.$date_paid.</td>";
                         echo "</tr>";
@@ -181,6 +198,9 @@ while ($row = mysqli_fetch_array($result5)){
                 echo "<th>Registration Number</th>";
                 echo "<th>Mechanic Id</th>";
                 echo "<th>Date Created</th>";
+                echo "<th>Cash</th>";
+                echo "<th>Card</th>";
+                
                 echo "<th>Paid</th>";
                 echo "</tr>";
 
@@ -202,8 +222,13 @@ while ($row = mysqli_fetch_array($result5)){
                         echo "<td>".$row['registration_number']."</td>";
                         echo "<td>".$row['username']."</td>";
                         echo "<td>$date_created</td>";
-                        if($is_paid==0)
-                            echo "<td><input type='submit' name='pay' value='" . $row['job_id'] . "' /><br/>Pay</td>";
+                        if($is_paid==0){
+                            echo "<td><input class='form-check-input' type='radio' value = 'cash' checked name='payment_type' id='cash'>
+                            <label class='form-check-label' for='cash'></td>";
+                            echo "<td><input class='form-check-input' type='radio' value = 'card' name='payment_type' id='card'>
+                            <label class='form-check-label' for='card'></td>";
+                            echo "<td><input type='submit' name='pay' value='$invoice_id' /><br/>Pay</td>";
+                        }
                         else
                             echo "<td>Yes on.$date_paid.</td>";
                         echo "</tr>";
@@ -238,8 +263,7 @@ while ($row = mysqli_fetch_array($result5)){
     while ($row = mysqli_fetch_array($result)){
         $hourly_rate = $row['hourly_rate'];
     }  
-    echo "Hourly rate\n";
-    echo $hourly_rate;
+ 
     $totalMechanic = $hourly_rate * $time_spent;
     if($job_type=='repair'){
         $query = "SELECT item_id FROM Stock_used  WHERE job_id = '$job_id'";
@@ -271,12 +295,14 @@ while ($row = mysqli_fetch_array($result5)){
     $query2 = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job  WHERE job_id = '$job_id'";
     $result2 = mysqli_query($conn, $query2);
 
-    $query5 = "SELECT is_paid, date_paid, date_created FROM Invoice  WHERE job_id = '$job_id'";
+    $query5 = "SELECT invoice_id,is_paid, date_paid, date_created FROM Invoice  WHERE job_id = '$job_id'";
     $result5 = mysqli_query($conn, $query5);
     while ($row = mysqli_fetch_array($result5)){
         $is_paid = $row['is_paid'];
         $date_paid = $row['date_paid'];
         $date_created = $row['date_created'];
+        $invoice_id = $row['invoice_id'];
+        
     }  
     ?>
 
@@ -297,19 +323,16 @@ while ($row = mysqli_fetch_array($result5)){
             <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
             <meta charset="UTF-8">
             <?php
-            if($job_type == 'repair'){
+            if($job_type == 'repair' || $job_type == 'stock_order'){
             echo "<h3 class='my-5'>Completed Jobs</h1>";
             echo "<div class='container'>";
             echo "<div class='row-fluid'>";
                 echo "<div class='col-xs-12'>";
                 echo "<div class='table-responsive'>";    
-                    echo "<table class='table table-hover table-inverse'>";
+                    echo "<table class='table table-hover table-inverse' id='invoiceRepair'>";
                     echo "<tr>";
                     echo "<th>Job id</th>";
                     echo "<th>Job type</th>";
-                    echo "<th>Status</th>";
-                    echo "<th>Estimate amount</th>";
-                    echo "<th>Book in date</th>";
                     echo "<th>Time Spent</th>";
                     echo "<th>Total parts price</th>";
                     echo "<th>Mechanic rate</th>";
@@ -319,6 +342,8 @@ while ($row = mysqli_fetch_array($result5)){
                     echo "<th>Registration Number</th>";
                     echo "<th>Mechanic Id</th>";
                     echo "<th>Date Created</th>";
+                    echo "<th>Cash</th>";
+                    echo "<th>Card</th>";
                     echo "<th>Paid</th>";
                     echo "</tr>";
                     if ($result2->num_rows > 0) {
@@ -328,9 +353,6 @@ while ($row = mysqli_fetch_array($result5)){
                             echo "<tr>";
                             echo "<td>" . $row["job_id"] . "</td>";
                             echo "<td>" . $row["job_type"] . "</td>";
-                            echo "<td>" . $row["status"] . "</td>";
-                            echo "<td>" . $row["estimate_amount"] . "</td>";
-                            echo "<td>" . $row['book_in_date'] . "</td>";
                             echo "<td>" . $row['time_spent'] . "</td>";
                             echo "<td>" . $totalPartsPrice. "</td>";
                             echo "<td>" . $hourly_rate. "</td>";
@@ -340,8 +362,13 @@ while ($row = mysqli_fetch_array($result5)){
                             echo "<td>".$row['registration_number']."</td>";
                             echo "<td>".$row['username']."</td>";
                             echo "<td>$date_created</td>";
-                            if($is_paid==0)
-                            echo "<td><input type='submit' name='pay' value='" . $row['job_id'] . "' /><br/>Pay</td>";
+                            if($is_paid==0){
+                            echo "<td><input class='form-check-input' type='radio' value = 'cash' checked name='payment_type' id='cash'>
+                            <label class='form-check-label' for='cash'></td>";
+                            echo "<td><input class='form-check-input' type='radio' value = 'card' name='payment_type' id='card'>
+                            <label class='form-check-label' for='card'></td>";
+                            echo "<td><input type='submit' name='pay' value='$invoice_id' /><br/>Pay</td>";
+                            }
                              else
                             echo "<td>Yes on.$date_paid.</td>";
                         echo "</tr>";
@@ -353,7 +380,11 @@ while ($row = mysqli_fetch_array($result5)){
                     }
                     
                     echo "</table>";
-        
+                    echo"
+                    <button onclick=fnExcelReport7()>
+                       <span class='glyphicon glyphicon-download'></span>
+                       Download Report
+                    </button>";
                 echo "</div>";
                 echo "</div>";
             }
@@ -363,7 +394,7 @@ while ($row = mysqli_fetch_array($result5)){
             echo "<div class='row-fluid'>";
                 echo "<div class='col-xs-12'>";
                 echo "<div class='table-responsive'>";    
-                    echo "<table class='table table-hover table-inverse'>";
+                    echo "<table id='invoiceOther' class='table table-hover table-inverse'>";
                     echo "<tr>";
                     echo "<th>Job id</th>";
                     echo "<th>Job type</th>";
@@ -375,6 +406,8 @@ while ($row = mysqli_fetch_array($result5)){
                     echo "<th>Registration Number</th>";
                     echo "<th>Mechanic Id</th>";
                     echo "<th>Date Created</th>";
+                    echo "<th>Cash</th>";
+                    echo "<th>Card</th>";
                     echo "<th>Paid</th>";
                     echo "</tr>";
 
@@ -396,8 +429,15 @@ while ($row = mysqli_fetch_array($result5)){
                             echo "<td>".$row['registration_number']."</td>";
                             echo "<td>".$row['username']."</td>";
                             echo "<td>$date_created</td>";
-  
-                                echo "<td>Yes on.$date_paid.</td>";
+                            if($is_paid==0){
+                                echo "<td><input class='form-check-input' type='radio' value = 'cash' checked name='payment_type' id='cash'>
+                            <label class='form-check-label' for='cash'></td>";
+                            echo "<td><input class='form-check-input' type='radio' value = 'card' name='payment_type' id='card'>
+                            <label class='form-check-label' for='card'></td>";
+                            echo "<td><input type='submit' name='pay' value='$invoice_id' /><br/>Pay</td>";
+                            }
+                             else
+                            echo "<td>Yes on.$date_paid.</td>";
                             echo "</tr>";
                             echo"</form>";           
                         }
@@ -406,7 +446,11 @@ while ($row = mysqli_fetch_array($result5)){
                     }
                     
                     echo "</table>";
-        
+                    echo"
+                    <button onclick=fnExcelReport7()>
+                       <span class='glyphicon glyphicon-download'></span>
+                       Download Report
+                    </button>";
                 echo "</div>";
                 echo "</div>";
             }
