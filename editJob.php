@@ -25,6 +25,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
+        <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
     <meta charset="UTF-8">
 
 <?php
@@ -48,7 +49,12 @@ if (isset($_POST['update'])) {
   </div>
   <div class="form-group">
     <label for="updateStatus">Update Status</label>
-    <input type="text" class="form-control" name="updateStatus" placeholder="Job status">
+    <select name="updateStatus"  class="form-control" required>
+      <option selected disabled>Choose...</option>
+      <option value='pending'>pending</option>
+      <option value='progress'>progress</option>
+      <option value='completed'>completed</option>
+      </select>
   </div>
   <div class="form-group">
     <label for="addStock">Add Part</label>

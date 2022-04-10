@@ -33,7 +33,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <div class="form-row">
         <div class="form-group col-md-6">
         <label for="inputEmail">Email</label>
-        <input type="email" class="form-control" required name="inputEmail" placeholder="Email">
+        <input type="email" class="form-control"  name="inputEmail" placeholder="Email">
         </div>
         <div class="form-group col-md-6">
         <label for="inputPassword">Password</label>

@@ -342,9 +342,12 @@ while ($row = mysqli_fetch_array($result5)){
                     echo "<th>Registration Number</th>";
                     echo "<th>Mechanic Id</th>";
                     echo "<th>Date Created</th>";
-                    echo "<th>Cash</th>";
-                    echo "<th>Card</th>";
+                    if($is_paid==0){
+                        echo "<th>Cash</th>";
+                        echo "<th>Card</th>";
+                    }
                     echo "<th>Paid</th>";
+
                     echo "</tr>";
                     if ($result2->num_rows > 0) {
                         // output data of each row
@@ -406,9 +409,12 @@ while ($row = mysqli_fetch_array($result5)){
                     echo "<th>Registration Number</th>";
                     echo "<th>Mechanic Id</th>";
                     echo "<th>Date Created</th>";
-                    echo "<th>Cash</th>";
-                    echo "<th>Card</th>";
+                    if($is_paid==0){
+                        echo "<th>Cash</th>";
+                        echo "<th>Card</th>";
+                    }
                     echo "<th>Paid</th>";
+
                     echo "</tr>";
 
                     if ($result2->num_rows > 0) {

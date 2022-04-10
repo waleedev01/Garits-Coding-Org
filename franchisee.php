@@ -13,6 +13,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 $query = "SELECT * FROM Stock where quantity < threshold_level";
 $result = mysqli_query($conn, $query);
 
+$query = "SELECT * FROM Invoice where is_paid = 0";
+$result2 = mysqli_query($conn, $query);
+
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +38,16 @@ $result = mysqli_query($conn, $query);
           <span aria-hidden='true'>&times;</span>
         </button>
       </div>
-      ";} ?><p>
+      ";} 
+      if(mysqli_num_rows($result2) > 0){
+        echo"<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+        <strong>Late Paymente alert</strong> Please go to View Invoice page.
+        <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      ";} ?>
+      <p>
 
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
@@ -199,5 +211,31 @@ $result = mysqli_query($conn, $query);
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
             <a href="invoice/viewInvoices.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Configure Pay Late</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="payLate/payLate.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Assign job to a mechanic</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="assignJobMechanic.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Add job to pending list</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="addJobPendingList.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  

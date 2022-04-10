@@ -76,3 +76,12 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         </div>
     </div>
 
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Restore database</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="db/restoreDatabase.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>
+

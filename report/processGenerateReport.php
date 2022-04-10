@@ -18,12 +18,12 @@ if (isset($_GET['CreateJobs'])) {
     if(isset($_GET['month']) && isset($_GET['year'])){
         $query = "SELECT job_id
         FROM Job
-        WHERE SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
+        WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
         $result = mysqli_query($conn, $query);
         $total_jobs_in_month = mysqli_num_rows($result);
           
         $query = "SELECT job_type, COUNT(*) AS 'count'
-        FROM Job WHERE SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year
+        FROM Job WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year
         GROUP BY job_type;";
         $result = mysqli_query($conn, $query);
         $i = 0;
@@ -40,19 +40,19 @@ if (isset($_GET['CreateJobs'])) {
 
         $query = "SELECT *
         FROM Job j, AccountHolder a
-        WHERE SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
+        WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
         $result = mysqli_query($conn, $query);
         $total_account_customers_month = mysqli_num_rows($result);
 
         $query = "SELECT *
-        FROM Job where SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
+        FROM Job where username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
         $result = mysqli_query($conn, $query);
         $total_normal_customers_month = mysqli_num_rows($result)-$total_account_customers_month;        
         
     }
 
         $query = "SELECT job_type, COUNT(*) AS 'count'
-        FROM Job
+        FROM Job where username is not null
         GROUP BY job_type;";
         $result = mysqli_query($conn, $query);
         $i = 0;
@@ -69,17 +69,17 @@ if (isset($_GET['CreateJobs'])) {
 
     $query = "SELECT *
     FROM Job j, AccountHolder a
-    WHERE j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
+    WHERE username is not null and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
     $result = mysqli_query($conn, $query);
     $total_account_customers = mysqli_num_rows($result);
 
     $query = "SELECT *
-    FROM Job";
+    FROM Job where username is not null";
     $result = mysqli_query($conn, $query);
     $total_normal_customers = mysqli_num_rows($result)-$total_account_customers;
 
 
-    $query = "SELECT * FROM Job";
+    $query = "SELECT * FROM Job where username is not null";
     $result = mysqli_query($conn, $query);
     $total_jobs = mysqli_num_rows($result);
     
@@ -88,17 +88,15 @@ if (isset($_GET['CreateJobs'])) {
     while ($row = mysqli_fetch_array($result)){
         $average_time = $row['average'];
     }  
-    echo $average_time;
-    echo "hello";   
+ 
     $query = "SELECT AVG(amount) 'average' FROM Invoice;";
     $result = mysqli_query($conn, $query);
     while ($row = mysqli_fetch_array($result)){
         $average_price = $row['average'];
     }  
-    echo $average_price;
 
     $query = "SELECT job_type, AVG(time_spent) AS 'average'
-    FROM Job
+    FROM Job where username is not null
     GROUP BY job_type;";
         $result = mysqli_query($conn, $query);
         $i = 0;
@@ -113,7 +111,7 @@ if (isset($_GET['CreateJobs'])) {
     }  
 
     $query = "SELECT job_type, AVG(amount) AS 'average'
-    FROM Job j,Invoice i where j.job_id = i.job_id
+    FROM Job j,Invoice i where j.job_id = i.job_id where username is not null
     GROUP BY job_type;";
     $result = mysqli_query($conn, $query);
     $i = 0;
@@ -128,8 +126,8 @@ if (isset($_GET['CreateJobs'])) {
     }  
 
     $query = "SELECT username, AVG(time_spent) AS 'average_time',  AVG(amount) AS 'average_amount'
-    FROM Job j, Invoice i where j.job_id = i.job_id
-    GROUP BY job_type;";
+    FROM Job j, Invoice i where j.job_id = i.job_id and username is not null
+    GROUP BY username;";
     $result_mechanic_query = mysqli_query($conn, $query);
     $i = 0;
 
@@ -150,6 +148,11 @@ if (isset($_GET['CreateJobs'])) {
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  window.onload = fnExcelReport2() {
+    startcountdown();
+  };
+</script>
 <head>
 <style>
         body{text-align: center; }

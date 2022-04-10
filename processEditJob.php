@@ -57,10 +57,10 @@ if($timeSpent != null){
 }
 
 if($taskId!=null){
+    $today = date("Y-m-d");
     $query = "INSERT INTO Task_performed (job_id,task_id,date_performed) VALUES (?,?,?)";
     $stmt = $conn->prepare($query);
-    $date = "2022";
-    $stmt->bind_param('iis', $pick_job_id, $taskId,$date);
+    $stmt->bind_param('iis', $pick_job_id, $taskId,$today);
     /* Execute the statement */
     $stmt->execute();
     $row = $stmt->affected_rows;
