@@ -9,6 +9,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: ../login.php");
     exit;
 }
+
+$query = "SELECT * FROM Customer";
+$resultCust = $conn->query($query);
 ?>
  
 <!DOCTYPE html>
@@ -30,7 +33,19 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
     <form action='' method='post'>
+    <div class="form-group">
+    <label for="CustomerID">Choose Customer</label>
+    <select required name="CustomerID"  class="form-control" >
+      <option selected disabled>Choose...</option>
+    <?php 
+    while($row = $resultCust->fetch_assoc()) {
+      echo "<option value=$row[customer_id]>$row[name] $row[surname]</option>";
+    } 
+    ?>
+    </select>
+</div>
         <div class="form-row">
+
         <div class="form-group col-md-6">
         <label for="inputEmail">Email</label>
         <input type="email" class="form-control"  name="inputEmail" placeholder="Email">
@@ -43,25 +58,25 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <div class="form-row">
         <div class="form-group col-md-6">
         <label for="name">Name</label>
-        <input type="text" class="form-control" required name="name" placeholder="Name">
+        <input type="text" class="form-control"  name="name" placeholder="Name">
         </div>
         <div class="form-group col-md-6">
         <label for="surname">Surname</label>
-        <input type="text" class="form-control" required name="surname" placeholder="Surname">
+        <input type="text" class="form-control"  name="surname" placeholder="Surname">
         </div>
     </div>
     <div class= form-row>
     <div class="form-group col-md-6">
         <label for="address">Address</label>
-        <input type="text" class="form-control" required name="address" placeholder="address">
+        <input type="text" class="form-control"  name="address" placeholder="address">
       </div>
       <div class="form-group col-md-6">
         <label for="postcode">Post code</label>
-        <input type="text" class="form-control" required name="postcode" placeholder="Post code">
+        <input type="text" class="form-control"  name="postcode" placeholder="Post code">
       </div>
       <div class="form-group col-md-6">
         <label for="city">City</label>
-        <input type="text" class="form-control" required name="city" placeholder="city">
+        <input type="text" class="form-control"  name="city" placeholder="city">
       </div>
       <div class="form-group col-md-6">
         <label for="mobileNumber">Mobile number</label>
@@ -81,10 +96,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         </select>
     </div>
     </div>
-    <button type="submit" name = "createAccount" class="btn btn-primary">Create Account</button>
+    <button type="submit" name = "createAccount" class="btn btn-primary">Edit Account</button>
   <form>
 <?php
 if (isset($_POST['createAccount'])) {
+    $customer_id = $_POST['CustomerID'];
     $companyName = $_POST['companyName'];
     $name = $_POST['name'];
     $surname = $_POST['surname'];
@@ -98,25 +114,59 @@ if (isset($_POST['createAccount'])) {
     $discountId = null;
     $payLate = null;
 
-    echo "hello";
-    $query = "INSERT INTO Customer (company_name,name,surname,address,post_code,city,mobile_telephone,home_telephone,email,pay_late,DiscountID) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param('sssssssssii',$companyName,$name,$surname,$address,$postcode,$city,$mobileNumber,$telephoneNumber,$email,$payLate,$discountId);
-    /* Execute the statement */
-    $stmt->execute();
-    $row = $stmt->affected_rows;
-    if($customerType=='Holder'){
-      $query = "INSERT INTO Customer (customer_id,discount_type,percentaf,address,post_code,city,mobile_telephone,home_telephone,email,pay_late,DiscountID) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
-      $stmt = $conn->prepare($query);
-      $stmt->bind_param('sssssssssii',$companyName,$name,$surname,$address,$postcode,$city,$mobileNumber,$telephoneNumber,$email,$payLate,$discountId);
-      /* Execute the statement */
-      $stmt->execute();
-      $row = $stmt->affected_rows;
+    if($companyName!=null){
+      $query = "UPDATE Customer SET company_name = '$companyName' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($name!=null){
+      $query = "UPDATE Customer SET name = '$name' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($surname!=null){
+      $query = "UPDATE Customer SET surname = '$surname' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($email!=null){
+      $query = "UPDATE Customer SET email = '$email' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($mobileNumber!=null){
+      $query = "UPDATE Customer SET mobile_telephone = '$mobileNumber' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($telephoneNumber!=null){
+      $query = "UPDATE Customer SET home_telephone = '$telephoneNumber' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($city!=null){
+      $query = "UPDATE Customer SET city = '$city' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($postcode!=null){
+      $query = "UPDATE Customer SET post_code = '$postcode' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($address!=null){
+      $query = "UPDATE Customer SET address = '$address' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
+    }
+
+    if($customerType!=null){
+      if($customerType=='holder')
+      $query = "DELETE FROM AccounHolder where customer_id = '$customer_id' where customer_id='$customer_id'";
+      $result = mysqli_query($conn, $query);
     }
 
     echo "<script language='javascript'>
-    alert('Account Created')
+    alert('Account Updated')
     </script>";
-    echo "<meta http-equiv='refresh' content='0'>";
-
+       
 }

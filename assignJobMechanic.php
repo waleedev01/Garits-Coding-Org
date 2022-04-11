@@ -32,7 +32,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 if (isset($_POST['update'])) {
     $pick_job_id = $_POST['update'];   
 }
-    $query = "SELECT * FROM Job where status!='completed' and username is null";
+    $query = "SELECT * FROM Job where status!='completed' and job_type !='stock_order'";
     $resultJobs = $conn->query($query);
 
     $query = "SELECT * FROM Mechanic";
@@ -42,7 +42,7 @@ if (isset($_POST['update'])) {
   <div class="form-group">
     <label for="chooseJob">Choose Job</label>
     <select name="chooseJob"  class="form-control" required>
-    <option selected disabled>Choose...</option>
+    <option selected required disabled>Choose...</option>
     <?php 
     while($row = $resultJobs->fetch_assoc()) {
       echo "<option value=$row[job_id]>$row[job_id] $row[status] $row[book_in_date] </option>";
@@ -71,10 +71,11 @@ if (isset($_POST['assignJob'])) {
 
     $query = "UPDATE Job SET username='$username' where job_id = '$job_id'";
     $result= mysqli_query($conn, $query);
-    if (mysqli_num_rows($result) > 0) { 
-        echo "<script language='javascript'>
-        alert('Job Assigned');";
-    }
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Job Assigned')
+    window.location.href='../$location';
+    </script>";
     echo "<meta http-equiv='refresh' content='0'>";
-    
+
 }

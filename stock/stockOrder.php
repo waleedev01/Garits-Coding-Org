@@ -25,6 +25,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
+        <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
     <meta charset="UTF-8">
 
 <?php
@@ -103,6 +104,11 @@ if (isset($_GET['stockOrder'])) {
     $query = "UPDATE Stock SET quantity = '$newQuantity' where item_id = '$item_id'";
     $result = mysqli_query($conn, $query);
 
-    $location="../$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
-header("location: $location");
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Stock Order Created')
+    window.location.href='../$location';
+    </script>";
+    echo "<meta http-equiv='refresh' content='0'>";
+
 }

@@ -14,9 +14,6 @@ $dbpass = '';
 $dbname = 'Garits';
 $mysqlExportPath ='backup.sql';
 
-//Export of the database and output of the status
-
-
 $command = "/Applications/xampp/xamppfiles/bin/mysqldump -u $dbuser -h localhost -p$dbpass $dbname > $mysqlExportPath";
 exec($command, $output);
 echo "<script language='javascript'>

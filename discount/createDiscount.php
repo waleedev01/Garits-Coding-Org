@@ -79,9 +79,11 @@ if (isset($_POST['createDiscount'])) {
 
     $query = "UPDATE Customer SET DiscountID = '$last_id' where customer_id = '$customer_id'";
     $result2= mysqli_query($conn, $query);
-    if ($row > 0) { 
-        echo "<script language='javascript'>
-        alert('Discount created');";
-    }
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Discount Plan Created')
+    window.location.href='../$location';
+    </script>";
+    echo "<meta http-equiv='refresh' content='0'>";
 
 }

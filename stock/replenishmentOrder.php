@@ -113,7 +113,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     if ($result_all->num_rows > 0) {
                         // output data of each row
                         while($row = $result_all->fetch_assoc()) {
-                            echo"<form action = '' method='POST'>";  
+                            echo"<form action = 'processOrder.php' method='POST'>";  
                             echo "<tr>";
                             echo "<td>" . $row["item_id"] . "</td>";
                             echo "<td>" . $row["part_name"] . "</td>";

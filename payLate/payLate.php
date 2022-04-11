@@ -65,9 +65,11 @@ if (isset($_POST['payLateConfiguration'])) {
 
     $query = "UPDATE Customer SET pay_late='$payLate' where customer_id = '$customer_id'";
     $result= mysqli_query($conn, $query);
-    if ($row > 0) { 
-        echo "<script language='javascript'>
-        alert('Pay late configured');";
-    }
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Pay late option configured')
+    window.location.href='../$location';
+    </script>";
+    echo "<meta http-equiv='refresh' content='0'>";
 
 }

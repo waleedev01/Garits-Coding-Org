@@ -41,8 +41,23 @@ if($stockId!=null){
             $quantity = $row['quantity'];
     $newQuantity = $quantity-1;
     echo $newQuantity;
-    $query = "UPDATE Stock SET quantity = '$newQuantity' where item_id = '$stockId'";
-    $result = mysqli_query($conn, $query);
+    try {
+        // First of all, let's begin a transaction
+        $conn->begin_transaction();
+        
+        // A set of queries; if one fails, an exception should be thrown
+        $conn->query("SELECT quantity FROM Stock WHERE item_id = '$stockId'");
+        $conn->query("UPDATE Stock SET quantity = '$newQuantity' where item_id = '$stockId'");
+        
+        // If we arrive here, it means that no exception was thrown
+        // i.e. no query has failed, and we can commit the transaction
+        $conn->commit();
+    } catch (\Throwable $e) {
+        // An exception has been thrown
+        // We must rollback the transaction
+        $conn->rollback();
+        throw $e; // but the error must be handled anyway
+    }
 }
 
 if($newStatus != null){
@@ -73,6 +88,7 @@ if($taskId!=null){
 
 $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
 header("location: $location");
+echo "<meta http-equiv='refresh' content='0'>";
 
 
 

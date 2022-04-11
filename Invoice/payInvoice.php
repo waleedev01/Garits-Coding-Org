@@ -30,8 +30,11 @@ if ($row > 0) {
     "error";
 }
 
-echo "<script type='text/javascript'>alert('Payment Recorded');</script>";
-$location="/invoice/produceInvoice.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
-header("location: $location");
+echo "<script language='javascript'>
+alert('Payment recorded ')
+window.location.href='produceInvoice.php';
+</script>";
+echo "<meta http-equiv='refresh' content='0'>";
+ 
 
 ?>

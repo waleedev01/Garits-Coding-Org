@@ -30,7 +30,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <?php
 
-$query = "SELECT * FROM Job where status!='completed' and status!='pending' and username is null";
+$query = "SELECT * FROM Job where status!='completed' and status!='pending' and job_type!='stock_order'";
 $resultJobs = $conn->query($query);
 ?>
 <form action = '' method = 'post'>
@@ -53,10 +53,11 @@ if (isset($_POST['addPendingList'])) {
     $job_id = $_POST['chooseJob'];
     $query = "UPDATE Job SET status='pending' where job_id = '$job_id'";
     $result= mysqli_query($conn, $query);
-    if ($row > 0) { 
-        echo "<script language='javascript'>
-        alert('Job added to pending list');";
-    }
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Job Added to the pending list')
+    window.location.href='../$location';
+    </script>";
     echo "<meta http-equiv='refresh' content='0'>";
 
 }

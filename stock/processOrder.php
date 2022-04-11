@@ -25,15 +25,13 @@ if (isset($_POST['CreateOrder'])) {
 
     $query = "UPDATE Stock SET delivery = '$orderQuantity' where item_id = '$item_id'";
     $result2= mysqli_query($conn, $query);
-    if ($row > 0) { 
-        echo "<script language='javascript'>
-        alert('Order created');
-      </script>";
-    } else {
-        "error";
-    }
+ 
+    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    echo "<script language='javascript'>
+    alert('Stock Order Created')
+    window.location.href='../$location';
+    </script>";
+    echo "<meta http-equiv='refresh' content='0'>";
+
 }
 
-
-$location="../stock/replenishmentOrder.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
-header("location: $location"); 

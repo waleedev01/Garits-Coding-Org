@@ -54,6 +54,7 @@ $result2 = mysqli_query($conn, $query);
         <a href="job/viewJobs.php" class="btn btn-secondary ml-3">Jobs list</a>
         <a href="stock/viewSpareParts.php" class="btn btn-secondary ml-3">Spare Parts</a>
         <a href="customer/viewCustomers.php" class="btn btn-secondary ml-3">Customers</a>
+        <a href="vehicle/searchVehicle.php" class="btn btn-secondary ml-3">Vehicle list</a>
 
         <meta charset="UTF-8">
     <div class=card-deck>
