@@ -25,15 +25,18 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </style>
 </head>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
+    <h2 class="my-5">View Customer Account</h2>
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <?php
+            //query for gettin all the customers
             $query = "SELECT * FROM Customer";
             $result = mysqli_query($conn, $query);
 
-    
+        //table for showing the customers
         echo "<h3 class='my-5'>Customers</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
@@ -55,7 +58,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 echo "<th>Email</th>";
       
                 echo "</tr>";
-          
+                //gettin query result values
                 if ($result->num_rows > 0) {
                     // output data of each row
                     while($row = $result->fetch_assoc()) {

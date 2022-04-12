@@ -91,7 +91,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="stock/addStockItem.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="addStock.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -100,7 +100,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="stock/updateStockItem.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="updateStock.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
     </div>
@@ -111,7 +111,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="vehicle/addVehicle.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="addVehicle.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -120,7 +120,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="vehicle/updateVehicle.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="updateVehicle.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -129,7 +129,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="vehicle/deleteVehicle.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="deleteVehicle.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -138,7 +138,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="job/createJob.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="createJob.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -147,7 +147,7 @@ $result2 = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="job/updateJob.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="editJobRec.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
     </div>

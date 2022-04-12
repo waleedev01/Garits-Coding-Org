@@ -12,6 +12,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 $query = "SELECT * FROM Customer";
 $resultCust = $conn->query($query);
+
+$query = "SELECT * FROM Vehicle";
+$resultVehic = $conn->query($query);
+
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +40,15 @@ $resultCust = $conn->query($query);
        <!-- Sumbit button refers to processChangeVehicle to carry out the java script and sql queries using Post -->
         <form action="processChangeVehicle.php" method="post">
   <div class="form-group">
-    <label for="InputRegID">Registration number</label>
-    <input type="text" name = "InputRegID" class="form-control" id="InputRegID" aria-describedby="RegHelp" placeholder="Enter Registration ID" required="required">
+  <label for="InputRegID">Choose Vehicle</label>
+    <select required name="InputRegID"  class="form-control" >
+      <option selected disabled>Choose...</option>
+    <?php 
+    while($row = $resultVehic->fetch_assoc()) {
+      echo "<option value=$row[registration_number]>$row[registration_number] $row[make]</option>";
+    } 
+    ?>
+    </select>
  <!--   <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
   </div>
   <div class="form-group">

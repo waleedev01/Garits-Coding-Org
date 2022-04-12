@@ -32,6 +32,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="vehicle/searchVehicle.php" class="btn btn-secondary ml-3">Vehicle list</a>
 
         <?php
+        /*
             $query = "SELECT job_id,job_type,status,book_in_date,customer_id,registration_number FROM Job where status = 'pending' AND username != '$username'"; //You don't need a ; like you do in SQL
             $result = mysqli_query($conn, $query);
         echo "<h3 class='my-5'>You can pick a job from this list</h1>";
@@ -76,7 +77,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     
             echo "</div>";
             echo "</div>";
-
+*/
             /*
              * second table
              */

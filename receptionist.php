@@ -126,7 +126,7 @@ $result = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="job/createJob.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="createJob.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
 
@@ -135,7 +135,7 @@ $result = mysqli_query($conn, $query);
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
-            <a href="job/updateJob.php" class="btn btn-primary stretched-link">Open</a>
+            <a href="editJobRec.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>
     </div>
@@ -200,5 +200,14 @@ $result = mysqli_query($conn, $query);
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
             <a href="invoice/viewInvoices.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">MoT reminders</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="MoTreminders.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  

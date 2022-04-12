@@ -28,10 +28,14 @@ $resultCust = $conn->query($query);
     </style>
 </head>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
+    <h2 class="my-5">Edit Customer Account</h2>
+
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
+    <!-- Form with input labels-->
     <form action='' method='post'>
     <div class="form-group">
     <label for="CustomerID">Choose Customer</label>
@@ -99,7 +103,10 @@ $resultCust = $conn->query($query);
     <button type="submit" name = "createAccount" class="btn btn-primary">Edit Account</button>
   <form>
 <?php
+
+//check if the form has been submitted
 if (isset($_POST['createAccount'])) {
+      //get attributes value
     $customer_id = $_POST['CustomerID'];
     $companyName = $_POST['companyName'];
     $name = $_POST['name'];
@@ -113,7 +120,7 @@ if (isset($_POST['createAccount'])) {
     $customerType = $_POST['customerType'];
     $discountId = null;
     $payLate = null;
-
+    //update queries that updates columns that has been inputted. Check if input is not null.
     if($companyName!=null){
       $query = "UPDATE Customer SET company_name = '$companyName' where customer_id='$customer_id'";
       $result = mysqli_query($conn, $query);
@@ -164,9 +171,10 @@ if (isset($_POST['createAccount'])) {
       $query = "DELETE FROM AccounHolder where customer_id = '$customer_id' where customer_id='$customer_id'";
       $result = mysqli_query($conn, $query);
     }
-
+    //alert
     echo "<script language='javascript'>
     alert('Account Updated')
     </script>";
-       
+    echo "<meta http-equiv='refresh' content='0'>";
+
 }

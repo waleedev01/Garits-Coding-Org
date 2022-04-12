@@ -36,12 +36,23 @@ if($Reg['item_id'] == $itemID){
          mysqli_query($conn,$partQuery);
      }
      if(!empty($quantity)){
-        $quantityQuery = "START TRANSACTION;
-        SELECT quantity FROM Stock WHERE item_id = '$itemID';
-        UPDATE Stock SET quantity = '$quantity' where item_id = '$itemID';
-        COMMIT";
-        
-        mysqli_query($conn,$quantityQuery);
+        try {
+            // First of all, let's begin a transaction
+            $conn->begin_transaction();
+            
+            // A set of queries; if one fails, an exception should be thrown
+            $conn->query("SELECT quantity FROM Stock WHERE item_id = '$itemID'");
+            $conn->query("UPDATE Stock SET quantity = '$quantity' where item_id = '$itemID'");
+            
+            // If we arrive here, it means that no exception was thrown
+            // i.e. no query has failed, and we can commit the transaction
+            $conn->commit();
+        } catch (\Throwable $e) {
+            // An exception has been thrown
+            // We must rollback the transaction
+            $conn->rollback();
+            throw $e; // but the error must be handled anyway
+        }
     }
     if(!empty($yearS)){
         $yearSQuery = " START TRANSACTION;

@@ -86,8 +86,11 @@ if($taskId!=null){
     }
 }
 
-$location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
-header("location: $location");
+$location="$role.php"; // If role is admin this will be admin.php, if receptionist this will be receptionist.php and more.
+echo "<script language='javascript'>
+alert('Job Updated')
+window.location.href='$location';
+</script>";
 echo "<meta http-equiv='refresh' content='0'>";
 
 

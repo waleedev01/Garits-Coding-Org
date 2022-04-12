@@ -1,5 +1,5 @@
 <?php
-// Initialize the session
+// Initialize the session and check if the user is logged in
 session_start();
 require_once "../config.php";
 $username = $_SESSION['username'];
@@ -25,10 +25,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </style>
 </head>
 <body>
+      <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
+    <h2 class="my-5">Create Customer </h2>
+
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
+    <!-- Form with input labels-->
     <form action='' method='post'>
         <div class="form-row">
         <div class="form-group col-md-6">
@@ -84,7 +88,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <button type="submit" name = "createAccount" class="btn btn-primary">Create Account</button>
   <form>
 <?php
+//check if the form has been submitted
 if (isset($_POST['createAccount'])) {
+  //get attributes value
     $companyName = $_POST['companyName'];
     $name = $_POST['name'];
     $surname = $_POST['surname'];
@@ -97,23 +103,25 @@ if (isset($_POST['createAccount'])) {
     $customerType = $_POST['customerType'];
     $discountId = null;
     $payLate = null;
-
-    echo "hello";
+    //make insert into query
     $query = "INSERT INTO Customer (company_name,name,surname,address,post_code,city,mobile_telephone,home_telephone,email,pay_late,DiscountID) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('sssssssssii',$companyName,$name,$surname,$address,$postcode,$city,$mobileNumber,$telephoneNumber,$email,$payLate,$discountId);
     /* Execute the statement */
     $stmt->execute();
     $row = $stmt->affected_rows;
-    if($customerType=='Holder'){
-      $query = "INSERT INTO Customer (customer_id,discount_type,percentaf,address,post_code,city,mobile_telephone,home_telephone,email,pay_late,DiscountID) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+    $last_id = $conn->insert_id;
+
+    //if customer has an account then a new record is created in the AccountHolder table
+    if($customerType=='holder'){
+      $query = "INSERT INTO AccountHolder (customer_id,pay_late) VALUES (?,?)";
       $stmt = $conn->prepare($query);
-      $stmt->bind_param('sssssssssii',$companyName,$name,$surname,$address,$postcode,$city,$mobileNumber,$telephoneNumber,$email,$payLate,$discountId);
+      $stmt->bind_param('ii',$last_id,$payLate);
       /* Execute the statement */
       $stmt->execute();
       $row = $stmt->affected_rows;
     }
-
+    //alert
     echo "<script language='javascript'>
     alert('Account Created')
     </script>";

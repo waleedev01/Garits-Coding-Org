@@ -9,7 +9,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: ../login.php");
     exit;
 }
-
+//get all customers for creating the dropdown menu
 $query = "SELECT * FROM Customer";
 $resultCust = $conn->query($query);
 ?>
@@ -28,16 +28,20 @@ $resultCust = $conn->query($query);
     </style>
 </head>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
+    <h2 class="my-5">Delete Customer </h2>
+
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
+     <!-- Form with input labels-->
     <form action='' method='post'>
     <div class="form-group">
     <label for="CustomerID">Choose Customer</label>
     <select required name="CustomerID"  class="form-control" >
       <option selected disabled>Choose...</option>
-    <?php 
+    <?php //using customer query results
     while($row = $resultCust->fetch_assoc()) {
       echo "<option value=$row[customer_id]>$row[name] $row[surname]</option>";
     } 
@@ -47,10 +51,14 @@ $resultCust = $conn->query($query);
     <button type="submit" name = "createAccount" class="btn btn-primary">Delete Account</button>
   <form>
 <?php
+
+//check if the form has been submitted
 if (isset($_POST['createAccount'])) {
+    //get attributes value
     $customer_id = $_POST['CustomerID'];   
-    $query = "DELETE FROM Customer where customer_id = '$customer_id'";
+    $query = "DELETE FROM Customer where customer_id = '$customer_id'";//make update query
     $result = mysqli_query($conn, $query);
+    //create Alert
     echo "<script language='javascript'>
     alert('Account delete')
     </script>";

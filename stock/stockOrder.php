@@ -101,8 +101,23 @@ if (isset($_GET['stockOrder'])) {
     while ($row = mysqli_fetch_assoc($res_stock)) 
             $quantity = $row['quantity'];
     $newQuantity = $quantity-1;
-    $query = "UPDATE Stock SET quantity = '$newQuantity' where item_id = '$item_id'";
-    $result = mysqli_query($conn, $query);
+    try {
+      // First of all, let's begin a transaction
+      $conn->begin_transaction();
+      
+      // A set of queries; if one fails, an exception should be thrown
+      $conn->query("SELECT quantity FROM Stock WHERE item_id = '$item_id'");
+      $conn->query("UPDATE Stock SET quantity = '$newQuantity' where item_id = '$item_id'");
+      
+      // If we arrive here, it means that no exception was thrown
+      // i.e. no query has failed, and we can commit the transaction
+      $conn->commit();
+  } catch (\Throwable $e) {
+      // An exception has been thrown
+      // We must rollback the transaction
+      $conn->rollback();
+      throw $e; // but the error must be handled anyway
+  }
 
     $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
     echo "<script language='javascript'>
