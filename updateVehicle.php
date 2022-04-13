@@ -40,14 +40,14 @@ $resultVehic = $conn->query($query);
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
        <!-- Sumbit button refers to processChangeVehicle to carry out the java script and sql queries using Post -->
-        <form action="processChangeVehicle.php" method="post">
+        <form action="processChangeVehicle.php" method="get">
   <div class="form-group">
   <label for="InputRegID">Choose Vehicle</label>
     <select required name="InputRegID"  class="form-control" >
       <option selected disabled>Choose...</option>
     <?php 
     while($row = $resultVehic->fetch_assoc()) {
-      echo "<option value=$row[registration_number]>$row[registration_number] $row[make]</option>";
+      echo "<option value='$row[registration_number]'\''>$row[registration_number] $row[make]</option>";
     } 
     ?>
     </select>
@@ -56,7 +56,7 @@ $resultVehic = $conn->query($query);
   <div class="form-group">
     <label for="CustomerID">Choose Customer</label>
     <select required name="CustomerID"  class="form-control" >
-      <option selected disabled value="">Choose...</option>
+      <option selected disabled>Choose...</option>
     <?php 
     while($row = $resultCust->fetch_assoc()) {
       echo "<option value=$row[customer_id]>$row[name] $row[surname]</option>";

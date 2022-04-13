@@ -99,7 +99,7 @@ $resultVehic = $conn->query($query);
       <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultVehic->fetch_assoc()) {
-      echo "<option value=$row[registration_number]>$row[registration_number] $row[make] $row[model]</option>";
+      echo "<option value='$row[registration_number]'\''>$row[registration_number] $row[make] $row[model]</option>";
     } 
     ?>
     </select>

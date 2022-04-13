@@ -32,7 +32,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
-        <?php//select all low stock elements
+        <?php //select all low stock elements
             $query = "SELECT * FROM Stock where quantity < threshold_level";
             $result = mysqli_query($conn, $query);
             //select all spare parts
