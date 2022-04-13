@@ -31,12 +31,12 @@ if (isset($_GET['CreateJobs'])) {
         $i = 0;
         //count jobs for each job_type
         while ($row = mysqli_fetch_array($result)){
-            if($i==0)
-                $MoT_count_month = $row['count'];
-            if($i==1)
-                $annual_service_count_month = $row['count'];
-            if($i==2)
-                $repair_count_month = $row['count'];
+            if($row['job_type']=='MoT')
+            $MoT_count_month = $row['count'];
+            if($row['job_type']=='annual service')
+            $annual_service_count_month = $row['count'];
+            if($row['job_type']=='repair')
+            $repair_count_month = $row['count'];
             $i++;
         }  
     
@@ -61,11 +61,11 @@ if (isset($_GET['CreateJobs'])) {
     $result = mysqli_query($conn, $query);
     $i = 0;
     while ($row = mysqli_fetch_array($result)){
-        if($i==0)
+        if($row['job_type']=='MoT')
             $MoT_count = $row['count'];
-        if($i==1)
+        if($row['job_type']=='annual service')
             $annual_service_count = $row['count'];
-        if($i==2)
+        if($row['job_type']=='repair')
             $repair_count = $row['count'];
         $i++;
     }  
@@ -102,7 +102,7 @@ if (isset($_GET['CreateJobs'])) {
         $average_price = $row['average'];
     }  
 
-    //get average time for each job    
+    //get average time for each job  type  
     $query = "SELECT job_type, AVG(time_spent) AS 'average'
     FROM Job where job_type!='stock_order'
     GROUP BY job_type;";
@@ -120,7 +120,7 @@ if (isset($_GET['CreateJobs'])) {
 
     //get average amount for each job    
     $query = "SELECT job_type, AVG(amount) AS 'average'
-    FROM Job j,Invoice i where j.job_id = i.job_id where job_type!='stock_order'
+    FROM Job j,Invoice i where j.job_id = i.job_id and job_type!='stock_order'
     GROUP BY job_type;";
     $result = mysqli_query($conn, $query);
     $i = 0;

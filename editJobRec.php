@@ -61,7 +61,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div class="form-group">
     <label for="updateStatus">Update Status</label>
     <select name="updateStatus"  class="form-control" required>
-      <option selected disabled value="">Choose...</option>
+      <option selected disabled >Choose...</option>
       <option value='pending'>pending</option>
       <option value='progress'>progress</option>
       <option value='completed'>completed</option>
@@ -70,7 +70,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div class="form-group">
     <label for="addStock">Add Part</label>
     <select name="addStock"  class="form-control" required>
-      <option selected disabled value="">Choose...</option>
+      <option selected disabled>Choose...</option>
     <?php 
     while($row = $resultParts->fetch_assoc()) {
       echo "<option value=$row[item_id]>$row[part_name]</option>";
@@ -81,7 +81,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <div class="form-group">
     <label for="addTask">Add Task</label>
     <select name="addTask"  class="form-control" required>
-      <option selected disabled value="">Choose...</option>
+      <option selected disabled>Choose...</option>
     <?php 
     while($row = $resultTasks->fetch_assoc()) {
       echo "<option value=$row[task_id]>$row[description]</option>";

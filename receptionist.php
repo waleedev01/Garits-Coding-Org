@@ -215,3 +215,12 @@ $result = mysqli_query($conn, $query);
             <a href="as_reminders.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Confirm delivery</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="deliveryReceived.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  

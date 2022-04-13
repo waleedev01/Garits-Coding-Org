@@ -32,11 +32,11 @@ while ($row = mysqli_fetch_array($result)){
 //mechanic total
 $totalMechanic = $hourly_rate * $time_spent;
 //if job type is repair or stock order. I have done this if branch since only repairs have spare parts linked to a job
-if($job_type=='repair' || $job_type == 'stock_order'){
+if($job_type=='repair' || $job_type == 'stock_order' || $job_type == 'annual service'){
     //select all the item used in a job
     $query = "SELECT item_id FROM Stock_used  WHERE job_id = '$job_id'";
     $result = mysqli_query($conn, $query);
-    if($job_type=='repair'){
+    if($job_type=='repair' || $job_type=='annual service'){
         //save the items in an array
         while ($row = mysqli_fetch_array($result))
             $item_id[] = $row['item_id'];
@@ -53,7 +53,19 @@ if($job_type=='repair' || $job_type == 'stock_order'){
             if($i<count($prices))
                 $totalPartsPrice = $totalPartsPrice+$prices[$i];
         }
-        
+        if($job_type == 'annual service'){
+            for($i = 0;$i<count($item_id);$i++){
+                if($item_id[$i]== 10){
+                    $totalPartsPrice= $totalPartsPrice-10;
+                }
+                if($item_id[$i]== 11){
+                    $totalPartsPrice= $totalPartsPrice-15;
+                }
+                if($item_id[$i]== 9){
+                    $totalPartsPrice= $totalPartsPrice-25;
+                }
+            }
+        }
         $totalPartsPrice *= 1.30;//+30% stock price level up
         $totalPartsPrice *= 1.20;//+20% VAT
         $totalMechanic *= 1.20;//+20% VAT
@@ -85,7 +97,7 @@ $today = date("Y/m/d");//today date
 $query = "INSERT INTO Invoice (date_created,is_paid,amount,job_id,customer_id) VALUES (?,?,?,?,?)";
 $stmt = $conn->prepare($query);
 $MoT_price = 66;//fix price for MoT
-$anual_price = 114;//fix price for annual service
+$anual_price = 114+$totalPartsPrice;//fix price for annual service
 $is_paid = 0;
 if($job_type=='repair' || $job_type == 'stock_order')
     $stmt->bind_param('sidii',$today,$is_paid,$totalJobWithVat,$job_id,$customer_id);//if repair or stock order then the invoice amount changes based on the spare parts and mechanic rate
@@ -230,7 +242,7 @@ while ($row = mysqli_fetch_array($result5)){
                         if($job_type=='MoT')
                             echo "<td>66£</td>";
                         else
-                            echo "<td>114£</td>";
+                            echo "<td>$anual_price</td>";
                         echo "<td>".$row['customer_id']."</td>";
                         echo "<td>".$row['registration_number']."</td>";
                         echo "<td>".$row['username']."</td>";
@@ -262,7 +274,6 @@ while ($row = mysqli_fetch_array($result5)){
     else{
         //same code as on the page start. But used for viewing invoices.
         $job_id = $_POST['View'];
-
         $query3 = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job  WHERE job_id = '$job_id'";
         $result3 = mysqli_query($conn, $query3);
         while ($row = mysqli_fetch_array($result3)){
@@ -279,13 +290,15 @@ while ($row = mysqli_fetch_array($result5)){
     }  
  
     $totalMechanic = $hourly_rate * $time_spent;
-    if($job_type=='repair'|| $job_type == 'stock_order'){
+    if($job_type=='repair' || $job_type == 'stock_order' || $job_type == 'annual service'){
+        //select all the item used in a job
         $query = "SELECT item_id FROM Stock_used  WHERE job_id = '$job_id'";
         $result = mysqli_query($conn, $query);
-        if($job_type=='repair'){
+        if($job_type=='repair' || $job_type=='annual service'){
+            //save the items in an array
             while ($row = mysqli_fetch_array($result))
                 $item_id[] = $row['item_id'];
-    
+            //save the items prices.
             for($i = 0;$i<count($item_id);$i++){
                 $query = "SELECT price FROM Stock  WHERE item_id = '$item_id[$i]'";
                 $result = mysqli_query($conn, $query);
@@ -293,24 +306,40 @@ while ($row = mysqli_fetch_array($result5)){
                     $prices[] = $row['price'];
                 }
             }
-    
+            //save the total price of spare parts
             for($i = 0;$i<count($prices);$i++){
                 if($i<count($prices))
-                $totalPartsPrice = $totalPartsPrice+$prices[$i];
+                    $totalPartsPrice = $totalPartsPrice+$prices[$i];
             }
-            $totalPartsPrice *= 1.30;
-            $totalPartsPrice *= 1.20;
-            $totalMechanic *= 1.20;
-            $totalJobWithVat = $totalMechanic+$totalPartsPrice;
+            if($job_type == 'annual service'){
+                for($i = 0;$i<count($item_id);$i++){
+                    if($item_id[$i]== 10){
+                        $totalPartsPrice= $totalPartsPrice-10;
+                    }
+                    if($item_id[$i]== 11){
+                        $totalPartsPrice= $totalPartsPrice-15;
+                    }
+                    if($item_id[$i]== 9){
+                        $totalPartsPrice= $totalPartsPrice-25;
+                    }
+                }
+            }
+            $totalPartsPrice *= 1.30;//+30% stock price level up
+            $totalPartsPrice *= 1.20;//+20% VAT
+            $totalMechanic *= 1.20;//+20% VAT
+            $totalJobWithVat = $totalMechanic+$totalPartsPrice;//total jobs
         }
         else{
             while ($row = mysqli_fetch_array($result))
+                //get item id that has been sold to a customer
                 $item_id = $row['item_id'];
                 $query9 = "SELECT price FROM Stock WHERE item_id = '$item_id'";
                 $result9= mysqli_query($conn, $query9);
+                //save stock price
                 while ($row = mysqli_fetch_array($result9))
                     $priceStockOrder = $row['price'];
                 $totalPartsPrice = $priceStockOrder;
+                //save total price.
                 $totalPartsPrice *= 1.30;
                 $totalPartsPrice *= 1.20;
                 $totalJobWithVat = $totalPartsPrice;
@@ -450,7 +479,7 @@ while ($row = mysqli_fetch_array($result5)){
                             if($job_type=='MoT')
                                 echo "<td>66£</td>";
                             else
-                                echo "<td>114£</td>";
+                                echo "<td>$anual_price</td>";
                             echo "<td>".$row['customer_id']."</td>";
                             echo "<td>".$row['registration_number']."</td>";
                             echo "<td>".$row['username']."</td>";

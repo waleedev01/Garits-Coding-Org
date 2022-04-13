@@ -24,10 +24,10 @@ if (isset($_GET['CreateStockReport'])) {
               </script>";
     }
     //report query
-    $query = "SELECT part_name, s.item_id, manufacturer_name,vehicle_type,year, price, quantity AS 'InitialStockLevel', 
-    quantity * price AS 'initial_cost', COUNT(su.item_id) 'Used', 
+    $query = "SELECT part_name, s.item_id, manufacturer_name, vehicle_type, year, price, quantity+COUNT(su.item_id) AS 'InitialStockLevel', 
+    (quantity+COUNT(su.item_id)) * price AS 'initial_cost', COUNT(su.item_id) 'Used', 
     delivery, 
-    quantity-COUNT(su.item_id) 'New_Stock_Level', quantity * price AS 'Stock_cost', threshold_level
+    quantity AS 'New_Stock_Level', quantity * price AS 'Stock_cost', threshold_level
     FROM Stock s
     LEFT JOIN Stock_used su ON s.item_id = su.item_id AND (su.date_used>=$startDate AND su.date_used < $endDate)
     GROUP BY s.item_id;";

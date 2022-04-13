@@ -33,17 +33,12 @@ if($stockId!=null){
     /* Execute the statement */
     $stmt->execute();
     $row = $stmt->affected_rows;
-    if ($row > 0) { 
-        echo "data inserted";
-    } else {
-        "error";
-    }
+   
     $query_stock_quantity = "SELECT quantity FROM Stock WHERE item_id = '$stockId'";
     $res_stock= mysqli_query($conn,$query_stock_quantity) or die(mysql_error());
     while ($row = mysqli_fetch_assoc($res_stock)) 
             $quantity = $row['quantity'];
     $newQuantity = $quantity-1;
-    echo $newQuantity;
     try {
         // First of all begin a transaction
         $conn->begin_transaction();
@@ -70,7 +65,6 @@ if($newStatus != null){
 if($timeSpent != null){
     $query = "UPDATE Job SET time_spent = '$timeSpent' where job_id ='$pick_job_id'";
     $result = mysqli_query($conn, $query);
-    ECHO $result;
 }
 
 if($taskId!=null){
@@ -81,11 +75,7 @@ if($taskId!=null){
     /* Execute the statement */
     $stmt->execute();
     $row = $stmt->affected_rows;
-    if ($row > 0) { 
-        echo "data inserted";
-    } else {
-        "error";
-    }
+  
 }
 
 $location="$role.php"; // If role is admin this will be admin.php, if receptionist this will be receptionist.php and more.
