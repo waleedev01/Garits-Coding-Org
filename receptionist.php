@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -46,7 +48,7 @@ $result = mysqli_query($conn, $query);
 
         <meta charset="UTF-8">
     <div class=card-deck>
-
+     <!-- Receptionist view -->   
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
         <div class="card-header">Create Customer Account</div>
         <div class="card-body">
@@ -177,7 +179,7 @@ $result = mysqli_query($conn, $query);
     </div>
 
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-        <div class="card-header">Generate Jobs Report</div>
+        <div class="card-header">Generate Report</div>
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
@@ -186,14 +188,7 @@ $result = mysqli_query($conn, $query);
     </div>
     </div>
     <div class=card-deck>
-    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-        <div class="card-header">Create Discount</div>
-        <div class="card-body">
-            <h5 class="card-title"></h5>
-            <p class="card-text"></p>
-            <a href="discount/createDiscount.php" class="btn btn-primary stretched-link">Open</a>
-        </div>
-    </div>  
+
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
         <div class="card-header">View Invoices</div>
         <div class="card-body">
@@ -209,5 +204,14 @@ $result = mysqli_query($conn, $query);
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
             <a href="MoTreminders.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Annual Service reminders</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="as_reminders.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  

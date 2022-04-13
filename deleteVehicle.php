@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -38,7 +40,7 @@ $resultVehicle = $conn->query($query);
         <div class="form-group">
     <label for="InputRegID">Choose Vehicle</label>
     <select required name="InputRegID"  class="form-control" >
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultVehicle->fetch_assoc()) {
       echo "<option value=$row[registration_number]>$row[registration_number]</option>";

@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -25,14 +27,15 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </style>
 </head>
 <body>
+            <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
-        <?php
+        <?php//select all low stock elements
             $query = "SELECT * FROM Stock where quantity < threshold_level";
             $result = mysqli_query($conn, $query);
-
+            //select all spare parts
             $query_all = "SELECT * FROM Stock";
             $result_all = mysqli_query($conn, $query_all);
         echo "<h3 class='my-5'>Low Stock Parts</h1>";
@@ -41,7 +44,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         
             echo "<div class='col-xs-12'>";
             echo "<div class='table-responsive'>";
-            
+                //table to show the low stock items
                 echo "<table class='table table-hover table-inverse'>";
                 
                 echo "<tr>";
@@ -61,7 +64,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                 if ($result->num_rows > 0) {
                     // output data of each row
                     while($row = $result->fetch_assoc()) {
-                        echo"<form action = 'processOrder.php' method='POST'>";  
+                        echo"<form action = 'processOrder.php' method='POST'>";//form for order spare parts
                         echo "<tr>";
                         echo "<td>" . $row["item_id"] . "</td>";
                         echo "<td>" . $row["part_name"] . "</td>";
@@ -72,7 +75,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                         echo "<td>" . $row['vehicle_type'] . "</td>";
                         echo "<td>" . $row['threshold_level'] . "</td>";
                         echo "<th>". $row['delivery'] ."</th>";
-                        echo "<td><input type=number name='orderQuantity' min=1></td>";
+                        echo "<td><input type=number name='orderQuantity' min=1></td>";//order button
                         echo "<td><input type='submit' value='" . $row['item_id'] ."' name='CreateOrder'><br/></td>";
 
                         echo "</tr>";
@@ -86,7 +89,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     
             echo "</div>";
             echo "</div>";
-
+            //all spare parts        
             echo "<h3 class='my-5'>Stock Parts</h1>";
             echo "<div class='container'>";
             echo "<div class='row-fluid'>";
@@ -113,7 +116,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
                     if ($result_all->num_rows > 0) {
                         // output data of each row
                         while($row = $result_all->fetch_assoc()) {
-                            echo"<form action = 'processOrder.php' method='POST'>";  
+                            echo"<form action = 'processOrder.php' method='POST'>"; //form for order spare parts 
                             echo "<tr>";
                             echo "<td>" . $row["item_id"] . "</td>";
                             echo "<td>" . $row["part_name"] . "</td>";

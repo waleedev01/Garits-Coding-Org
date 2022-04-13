@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //Code from lab sample solution
 if(!isset($_SESSION)) {
     session_start(); 
@@ -19,7 +21,7 @@ $row = mysqli_fetch_row($result);
 
 
 if (!isset($row[0] ) || !isset($row[1])) {
-    if(mysqli_num_rows($res_username) > 0){//code by me to check if the username exists
+    if(mysqli_num_rows($res_username) > 0){//code  to check if the username exists
         echo "<script language='javascript'>
                 alert('Incorrect Password');
                 window.location.href = 'login.php';
@@ -38,10 +40,10 @@ else{
     while ($row = mysqli_fetch_assoc($res_role)) 
             $role = $row['role'];
 
-    $_SESSION['username'] = $username;
+    $_SESSION['username'] = $username;//store session values
     $_SESSION['role'] = $role;
     $_SESSION["loggedin"] = true;
-    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    $location="$role.php"; // If role is admin this will be admin.php, if receptionist this will be receptionist.php and more.
     header("location: $location"); 
 }
 ?>

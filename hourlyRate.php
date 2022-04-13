@@ -31,28 +31,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <meta charset="UTF-8">
 
 <?php
-    $query = "SELECT * FROM Job where status!='completed' and job_type !='stock_order'";//get job that has not been completed
-    $resultJobs = $conn->query($query);
-
-    $query = "SELECT * FROM Mechanic";//select mechanic
+    $query = "SELECT * FROM Mechanic";//select all mechanics
     $resultMec = $conn->query($query);
 ?>
-<form action = '' method = 'post'><!-- form for selecting mechanic and job -->
-  <div class="form-group">
-    <label for="chooseJob">Choose Job</label>
-    <select name="chooseJob"  class="form-control" required>
-    <option selected required disabled value="">Choose...</option>
-    <?php 
-    while($row = $resultJobs->fetch_assoc()) {
-      echo "<option value=$row[job_id]>$row[job_id] $row[status] $row[book_in_date] </option>";
-    } 
-    ?>
-    </select>
-  </div>
+<form action = '' method = 'post'><!-- Form for assigning a hourly rate to a mechanic -->
   <div class="form-group">
     <label for="chooseMec">Choose Mechanic</label>
     <select name="chooseMec"  class="form-control" required>
-      <option selected disabled value="">Choose...</option>
+    <option selected required disabled>Choose...</option>
     <?php 
     while($row = $resultMec->fetch_assoc()) {
       echo "<option value=$row[username]>$row[username]</option>";
@@ -60,22 +46,26 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     ?>
     </select>
   </div>
+  <div class="form-group">
+        <label for="hourlyRate">Hourly Rate</label>
+        <input type="number" class="form-control"  min=1 name="hourlyRate" required placeholder="Hourly Rate">
+  </div>
  
-  <button type="submit" name='assignJob' class="btn btn-primary">Submit</button>
+  <button type="submit" name='addHourlyRate' class="btn btn-primary">Submit</button>
 </form>
 <?php
 
 //if form has been submitted
-if (isset($_POST['assignJob'])) {
+if (isset($_POST['addHourlyRate'])) {
     $username = $_POST['chooseMec'];
-    $job_id = $_POST['chooseJob'];
+    $hourlyRate = $_POST['hourlyRate'];
 
-    $query = "UPDATE Job SET username='$username' where job_id = '$job_id'";//update job, add mechanic username
+    $query = "UPDATE Mechanic SET hourly_rate='$hourlyRate' where username = '$username'";//update the hourly rate column
     $result= mysqli_query($conn, $query);
-    $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
+    $location="$role.php"; // If role is admin this will be admin.php, if receptionist this will be receptionist.php and more.
     echo "<script language='javascript'>
-    alert('Job Assigned')
-    window.location.href='../$location';
+    alert('Hourly rate recorded')
+    window.location.href='$location';
     </script>";
     echo "<meta http-equiv='refresh' content='0'>";
 

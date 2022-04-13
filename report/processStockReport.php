@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -10,22 +12,22 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 $today = date("Y-m-d");
-
+//if job report has been asked
 if (isset($_GET['CreateStockReport'])) {
-    $startDate = $_GET['startDate'];
+    $startDate = $_GET['startDate'];//get start date and end date
     $endDate = $_GET['endDate'];
-
+    //check if data range is valid
     if($endDate<$startDate){
         echo "<script language='javascript'>
                 alert('Incorrect Date Range');
                 window.location.href = 'generateReport.php';
               </script>";
     }
-
+    //report query
     $query = "SELECT part_name, s.item_id, manufacturer_name,vehicle_type,year, price, quantity AS 'InitialStockLevel', 
     quantity * price AS 'initial_cost', COUNT(su.item_id) 'Used', 
     delivery, 
-    quantity-COUNT(su.item_id) 'New_Stock_Level', (quantity-COUNT(s.item_id)) * price AS 'Stock_cost', threshold_level
+    quantity-COUNT(su.item_id) 'New_Stock_Level', quantity * price AS 'Stock_cost', threshold_level
     FROM Stock s
     LEFT JOIN Stock_used su ON s.item_id = su.item_id AND (su.date_used>=$startDate AND su.date_used < $endDate)
     GROUP BY s.item_id;";
@@ -51,8 +53,8 @@ if (isset($_GET['CreateStockReport'])) {
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
-        <?php
-            echo "<h3 class='my-5'>Jobs Report</h1>";
+        <?php //report table
+            echo "<h3 class='my-5'>Stock Report</h1>";
             echo "<div class='container'>";
             echo "<div class='row-fluid'>";
                 echo "<div class='col-xs-12'>";

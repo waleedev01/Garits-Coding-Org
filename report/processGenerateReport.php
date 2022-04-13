@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -9,24 +11,25 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: ../login.php");
     exit;
 }
-$today = date("Y-m-d");
-
+$today = date("Y-m-d");//get today date
+//if job report has been asked
 if (isset($_GET['CreateJobs'])) {
-    $month = $_GET['month'];
+    $month = $_GET['month'];//get the range
     $year = $_GET['year'];
-
+    //if the user wants a report with the date range, month and year should not be null
     if(isset($_GET['month']) && isset($_GET['year'])){
         $query = "SELECT job_id
         FROM Job
-        WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
+        WHERE username is not null and SUBSTRING(book_in_date,6, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
         $result = mysqli_query($conn, $query);
         $total_jobs_in_month = mysqli_num_rows($result);
-          
+        //select all jobs in the data range  
         $query = "SELECT job_type, COUNT(*) AS 'count'
-        FROM Job WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year
+        FROM Job WHERE username is not null and SUBSTRING(book_in_date,6, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year
         GROUP BY job_type;";
         $result = mysqli_query($conn, $query);
         $i = 0;
+        //count jobs for each job_type
         while ($row = mysqli_fetch_array($result)){
             if($i==0)
                 $MoT_count_month = $row['count'];
@@ -37,66 +40,71 @@ if (isset($_GET['CreateJobs'])) {
             $i++;
         }  
     
-
+        //query to get total account holder customers    
         $query = "SELECT *
         FROM Job j, AccountHolder a
-        WHERE username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
+        WHERE where job_type!='stock_order' and SUBSTRING(book_in_date,6, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
         $result = mysqli_query($conn, $query);
         $total_account_customers_month = mysqli_num_rows($result);
-
+        
+        //query to get total normal customers    
         $query = "SELECT *
-        FROM Job where username is not null and SUBSTRING(book_in_date,5, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
+        FROM Job where job_type!='stock_order' and SUBSTRING(book_in_date,6, 2) = $month AND SUBSTRING(book_in_date,1, 4) = $year";
         $result = mysqli_query($conn, $query);
         $total_normal_customers_month = mysqli_num_rows($result)-$total_account_customers_month;        
         
     }
-
-        $query = "SELECT job_type, COUNT(*) AS 'count'
-        FROM Job where username is not null
-        GROUP BY job_type;";
-        $result = mysqli_query($conn, $query);
-        $i = 0;
-        while ($row = mysqli_fetch_array($result)){
-            if($i==0)
-                $MoT_count = $row['count'];
-            if($i==1)
-                $annual_service_count = $row['count'];
-            if($i==2)
-                $repair_count = $row['count'];
-            $i++;
-        }  
+    //count jobs for each job_type
+    $query = "SELECT job_type, COUNT(*) AS 'count'
+    FROM Job where job_type!='stock_order'
+    GROUP BY job_type;";
+    $result = mysqli_query($conn, $query);
+    $i = 0;
+    while ($row = mysqli_fetch_array($result)){
+        if($i==0)
+            $MoT_count = $row['count'];
+        if($i==1)
+            $annual_service_count = $row['count'];
+        if($i==2)
+            $repair_count = $row['count'];
+        $i++;
+    }  
     
-
+    //query to get total account holder customers    
     $query = "SELECT *
     FROM Job j, AccountHolder a
-    WHERE username is not null and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
+    where job_type!='stock_order' and j.customer_id IN(SELECT a.customer_id FROM AccountHolder);";
     $result = mysqli_query($conn, $query);
     $total_account_customers = mysqli_num_rows($result);
-
+    
+    //query to get total normal customers    
     $query = "SELECT *
-    FROM Job where username is not null";
+    FROM Job where job_type!='stock_order'";
     $result = mysqli_query($conn, $query);
     $total_normal_customers = mysqli_num_rows($result)-$total_account_customers;
 
-
-    $query = "SELECT * FROM Job where username is not null";
+    //get total
+    $query = "SELECT * FROM Job where job_type!='stock_order'";
     $result = mysqli_query($conn, $query);
     $total_jobs = mysqli_num_rows($result);
     
-    $query = "SELECT AVG(time_spent) 'average' FROM Job;";
+    //get average of the jobs
+    $query = "SELECT AVG(time_spent) 'average' FROM Job where job_type!='stock_order'";
     $result = mysqli_query($conn, $query);
     while ($row = mysqli_fetch_array($result)){
         $average_time = $row['average'];
     }  
  
+    //get average of the amount of jobs
     $query = "SELECT AVG(amount) 'average' FROM Invoice;";
     $result = mysqli_query($conn, $query);
     while ($row = mysqli_fetch_array($result)){
         $average_price = $row['average'];
     }  
 
+    //get average time for each job    
     $query = "SELECT job_type, AVG(time_spent) AS 'average'
-    FROM Job where username is not null
+    FROM Job where job_type!='stock_order'
     GROUP BY job_type;";
         $result = mysqli_query($conn, $query);
         $i = 0;
@@ -110,8 +118,9 @@ if (isset($_GET['CreateJobs'])) {
         $i++;
     }  
 
+    //get average amount for each job    
     $query = "SELECT job_type, AVG(amount) AS 'average'
-    FROM Job j,Invoice i where j.job_id = i.job_id where username is not null
+    FROM Job j,Invoice i where j.job_id = i.job_id where job_type!='stock_order'
     GROUP BY job_type;";
     $result = mysqli_query($conn, $query);
     $i = 0;
@@ -125,8 +134,9 @@ if (isset($_GET['CreateJobs'])) {
         $i++;
     }  
 
+    //get average time, amount foe each job
     $query = "SELECT username, AVG(time_spent) AS 'average_time',  AVG(amount) AS 'average_amount'
-    FROM Job j, Invoice i where j.job_id = i.job_id and username is not null
+    FROM Job j, Invoice i where j.job_id = i.job_id and job_type!='stock_order' and username is not null
     GROUP BY username;";
     $result_mechanic_query = mysqli_query($conn, $query);
     $i = 0;

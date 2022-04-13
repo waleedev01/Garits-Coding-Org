@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -37,7 +39,7 @@ $result = $conn->query($query);
   <div class="form-group">
     <!-- All the input fields -->
     <select required name="InputID"  class="form-control" >
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $result->fetch_assoc()) {
       echo "<option value=$row[item_id]>$row[item_id] $row[part_name]</option>";

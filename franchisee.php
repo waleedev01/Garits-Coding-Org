@@ -1,5 +1,9 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 session_start();
 require_once "config.php";
 $username = $_SESSION['username'];
@@ -31,7 +35,7 @@ $result2 = mysqli_query($conn, $query);
 <body>
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <?php
-    if(mysqli_num_rows($result) > 0){
+    if(mysqli_num_rows($result) > 0){//low stock alert
         echo"<div class='alert alert-warning alert-dismissible fade show' role='alert'>
         <strong>Low Stock Alert</strong> Please go to Check Stock Level page.
         <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
@@ -39,7 +43,7 @@ $result2 = mysqli_query($conn, $query);
         </button>
       </div>
       ";} 
-      if(mysqli_num_rows($result2) > 0){
+      if(mysqli_num_rows($result2) > 0){//late payment alert
         echo"<div class='alert alert-warning alert-dismissible fade show' role='alert'>
         <strong>Late Paymente alert</strong> Please go to View Invoice page.
         <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
@@ -48,17 +52,15 @@ $result2 = mysqli_query($conn, $query);
       </div>
       ";} ?>
       <p>
-
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <a href="job/viewJobs.php" class="btn btn-secondary ml-3">Jobs list</a>
         <a href="stock/viewSpareParts.php" class="btn btn-secondary ml-3">Spare Parts</a>
         <a href="customer/viewCustomers.php" class="btn btn-secondary ml-3">Customers</a>
         <a href="vehicle/searchVehicle.php" class="btn btn-secondary ml-3">Vehicle list</a>
-
         <meta charset="UTF-8">
     <div class=card-deck>
-
+    <!-- Franchisee tasks -->   
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
         <div class="card-header">Create Customer Account</div>
         <div class="card-body">
@@ -189,7 +191,7 @@ $result2 = mysqli_query($conn, $query);
     </div>
 
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-        <div class="card-header">Generate Jobs Report</div>
+        <div class="card-header">Generate Report</div>
         <div class="card-body">
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
@@ -238,5 +240,27 @@ $result2 = mysqli_query($conn, $query);
             <h5 class="card-title"></h5>
             <p class="card-text"></p>
             <a href="addJobPendingList.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+    </div>
+      <div class=card-deck>
+
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">MoT reminders</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="MoTreminders.php" class="btn btn-primary stretched-link">Open</a>
+        </div>
+    </div>  
+  
+
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="card-header">Annual Service reminders</div>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text"></p>
+            <a href="as_reminders.php" class="btn btn-primary stretched-link">Open</a>
         </div>
     </div>  

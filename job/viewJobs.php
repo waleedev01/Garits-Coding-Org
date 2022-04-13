@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -25,19 +27,21 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </style>
 </head>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <?php
+            //get jobs in ascending order
             $query = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job ORDER BY job_id ASC";
             $result = mysqli_query($conn, $query);
         echo "<h3 class='my-5'>Jobs</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
-        
+
             echo "<div class='col-xs-12'>";
-            echo "<div class='table-responsive'>";
+            echo "<div class='table-responsive'>"//table with list of the jobs
             
                 echo "<table class='table table-hover table-inverse'>";
                 

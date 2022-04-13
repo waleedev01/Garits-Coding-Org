@@ -3,14 +3,16 @@ ini_set('display_errors', 0);
 error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
-require_once "../config.php";
+require_once "config.php";
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
 // Check if the user is logged in, if not then redirect him to login page
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: ../login.php");
+    header("location: login.php");
     exit;
 }
+$today = date("Y-m-d");
+$week =  date('Y-m-d', strtotime("+7 days"));
 ?>
  
 <!DOCTYPE html>
@@ -32,16 +34,16 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <?php
-            $query = "SELECT registration_number,make,engine_serial,model,chassis_num, next_MoT_date, color FROM Vehicle ORDER BY registration_number ASC";
+            $query = "SELECT * FROM Vehicle where next_MoT_date between '$today' and '$week'";//query for getting vehicles that have a MoT in the next 7 days 
             $result = mysqli_query($conn, $query);
-        echo "<h3 class='my-5'>Vehicle</h1>";
+        echo "<h3 class='my-5'>Vehicle with MoT in the next 7 days</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
-
+        
             echo "<div class='col-xs-12'>";
-            echo "<div class='table-responsive'>";//table for showing the vehicles
+            echo "<div class='table-responsive'>";
             
-                echo "<table class='table table-hover table-inverse'>";
+                echo "<table class='table table-hover table-inverse'>";//table with vehicle details
                 
                 echo "<tr>";
                 echo "<th>Registration Number</th>";

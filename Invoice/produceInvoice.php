@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -23,15 +25,17 @@ $tmp = false;//check if it has invoice
         body{text-align: center; }
 </style>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <meta charset="UTF-8">
         <?php
+            //select all the jobs that has been completed
             $query = "SELECT job_id,job_type,status,estimate_amount,book_in_date, time_spent, customer_id, registration_number, username FROM Job  WHERE status = 'completed' ORDER BY job_id ASC";
             $result = mysqli_query($conn, $query);
-
+            //queries to check if a completed job has an invoice or not
             $query_invoice = "SELECT job_id
             FROM   Job
             WHERE  status = 'completed' and NOT EXISTS (SELECT job_id 
@@ -41,6 +45,7 @@ $tmp = false;//check if it has invoice
             while ($row = mysqli_fetch_array($result_invoice)){
                 $jobWithoutInvoice[] = $row['job_id']; 
             }
+        //table to show completed jobs
         echo "<h3 class='my-5'>Completed Jobs</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
@@ -76,6 +81,7 @@ $tmp = false;//check if it has invoice
                         echo "<td>" . $row['customer_id'] . "</td>";
                         echo "<td>" . $row['registration_number'] . "</td>";
                         echo "<td>" . $row['username'] . "</td>";
+                        //if a job has an iovoice then tmp will be false
                         for($i = 0;$i<count($jobWithoutInvoice);$i++){
                             if($row["job_id"] == $jobWithoutInvoice[$i]){
                                 $tmp = true;

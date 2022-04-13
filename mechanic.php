@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -81,7 +83,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
             /*
              * second table
              */
-            $query = "SELECT job_id,job_type,status,book_in_date,customer_id,registration_number,time_spent FROM Job where username ='$username'"; //You don't need a ; like you do in SQL
+            $query = "SELECT job_id,job_type,status,book_in_date,customer_id,registration_number,time_spent FROM Job where username ='$username'";//get all the mechanic jobs
             $result = mysqli_query($conn, $query);
             echo "<h3 class='my-5'>Update one of your existing jobs</h1>";
 

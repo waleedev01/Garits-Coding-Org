@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -10,13 +12,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-
+//get values
 $pick_job_id = $conn->real_escape_string($_POST["job_id"]);
 $newStatus = $conn->real_escape_string($_POST["updateStatus"]);
 $stockId = $conn->real_escape_string($_POST["addStock"]);
 $taskId = $conn->real_escape_string($_POST["addTask"]);
 $timeSpent = $conn->real_escape_string($_POST["timeSpent"]);
 
+//update queries for the columns that has been inputted
 if($taskId!=null){
     $query = "UPDATE Task_Used SET job_id = '$pick_job_id', task_id = '$taskId'";
     $result = mysqli_query($conn, $query);
@@ -42,7 +45,7 @@ if($stockId!=null){
     $newQuantity = $quantity-1;
     echo $newQuantity;
     try {
-        // First of all, let's begin a transaction
+        // First of all begin a transaction
         $conn->begin_transaction();
         
         // A set of queries; if one fails, an exception should be thrown
@@ -50,7 +53,6 @@ if($stockId!=null){
         $conn->query("UPDATE Stock SET quantity = '$newQuantity' where item_id = '$stockId'");
         
         // If we arrive here, it means that no exception was thrown
-        // i.e. no query has failed, and we can commit the transaction
         $conn->commit();
     } catch (\Throwable $e) {
         // An exception has been thrown

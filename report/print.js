@@ -1,3 +1,4 @@
+//all code taken by: https://stackoverflow.com/questions/22317951/export-html-table-data-to-excel-using-javascript-jquery-is-not-working-properl
 function fnExcelReport()
 {
     var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
@@ -11,8 +12,8 @@ function fnExcelReport()
     }
 
     tab_text=tab_text+"</table>";
-    tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove if u want links in your table
-    tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove if u want images in your table
+    tab_text= tab_text.replace(/<A[^>]*>|<\/A>/g, "");//remove  links in  table
+    tab_text= tab_text.replace(/<img[^>]*>/gi,""); // remove  images in  table
     tab_text= tab_text.replace(/<input[^>]*>|<\/input>/gi, ""); // reomves input params
 
     var ua = window.navigator.userAgent;

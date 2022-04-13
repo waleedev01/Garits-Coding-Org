@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -22,6 +24,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         body{text-align: center; }
 </style>
 <body>
+     <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
@@ -29,17 +32,16 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <meta charset="UTF-8">
 
 <?php
-if (isset($_POST['update'])) {
-    $pick_job_id = $_POST['update'];   
-}
+    //getting all customers
     $query = "SELECT * FROM Customer";
     $resultCustomers = $conn->query($query);
 ?>
+  <!-- Form with input labels-->
 <form action = '' method = 'post'>
   <div class="form-group">
     <label for="discountType">Discount Type</label>
     <select reequired name="discountType"  class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
       <option value='flexible'>Flexible</option>
       <option value='variable'>Variable</option>
       <option value='fixed'>Fixed</option>
@@ -48,7 +50,7 @@ if (isset($_POST['update'])) {
   <div class="form-group">
     <label for="addCustomer">Add Discount to Customer</label>
     <select name="addCustomer"  class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultCustomers->fetch_assoc()) {
       echo "<option value=$row[customer_id]>$row[name] $row[surname]</option>";
@@ -63,11 +65,14 @@ if (isset($_POST['update'])) {
   <button type="submit" name='createDiscount' class="btn btn-primary">Submit</button>
 </form>
 <?php
+
+//if form is submitted
 if (isset($_POST['createDiscount'])) {
+  //get form input values
     $discountType = $_POST['discountType'];
     $customer_id = $_POST['addCustomer'];
     $discountValue = $_POST['discountValue'];
-
+  //make a discount query
     $query = "INSERT INTO Discount (discount_type,value) VALUES (?,?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('si', $discountType, $discountValue);
@@ -77,6 +82,7 @@ if (isset($_POST['createDiscount'])) {
     $row = $stmt->affected_rows;
     $last_id = mysqli_insert_id($conn);
 
+    //update the customer discountID
     $query = "UPDATE Customer SET DiscountID = '$last_id' where customer_id = '$customer_id'";
     $result2= mysqli_query($conn, $query);
     $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.

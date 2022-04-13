@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -29,7 +31,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
-    <form action='' method='post'>
+    <form action='' method='post'><!-- Form for creating a task-->
     <div class="form-group">
         <label for="inputTaskDescription">Task Description</label>
         <input type="text" class="form-control" required name="inputTaskDescription" placeholder="Task Description">
@@ -38,10 +40,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   <form>
   <form>
 <?php
+//check if form has been submitted
 if (isset($_POST['createAccount'])) {
-    $taskDescription = $_POST['inputTaskDescription'];
+    $taskDescription = $_POST['inputTaskDescription'];//get task description
     
-    $query = "INSERT INTO Task (description) VALUES (?)";
+    $query = "INSERT INTO Task (description) VALUES (?)";//insert task in the db
     $stmt = $conn->prepare($query);
     $stmt->bind_param('s',$taskDescription);
     /* Execute the statement */

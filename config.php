@@ -1,6 +1,6 @@
 <?php
-/* Database credentials. Assuming you are running MySQL
-server with default setting (user 'root' with no password) */
+
+/* Database credentials*/
 $DATABASE_HOST = 'smcse-stuproj00.city.ac.uk';
 $DATABASE_USER = 'in2018t12';
 $DATABASE_PASS = '35VPanSH';

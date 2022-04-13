@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -24,12 +26,14 @@ $today = date("Y-m-d");
         body{text-align: center; }
 </style>
 <body>
+    <!-- Page Heading and Title-->
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
         <meta charset="UTF-8">
         <?php
+        //table for generating the report
         echo "<h3 class='my-5'>Reports</h1>";
         echo "<div class='container'>";
         echo "<div class='row-fluid'>";
@@ -42,6 +46,7 @@ $today = date("Y-m-d");
                 echo "<th>Year</th>";
                 echo "<th>Overall</th>";
                 echo "<th>Create</th>";
+                //form to get the month and year of the jobs report
                 echo"<form action = 'processGenerateReport.php' method='get'>";  
                 echo "<tr>";
                 echo "<td>Vehicle Report</td>";
@@ -53,6 +58,7 @@ $today = date("Y-m-d");
                 echo"</form>";
                 echo "</tr>";
                 echo "<tr>";
+                //stock report form for gettin the start date and end date
                 echo "<td>Stock Report</td>";
                 echo"<form action = 'processStockReport.php' method='get'>";  
                 echo "<td><input type=date required name='startDate' max=$today></td>";
@@ -67,11 +73,4 @@ $today = date("Y-m-d");
                 echo "</table>";
                 echo "</div>";
                 echo "</div>";
-    
-                
-        
-        
-        
-        
-        
         ?>

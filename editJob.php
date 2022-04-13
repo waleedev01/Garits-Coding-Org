@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -29,16 +31,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <meta charset="UTF-8">
 
 <?php
-if (isset($_POST['update'])) {
-    $pick_job_id = $_POST['update'];   
-}
     $query = "SELECT task_id,description FROM Task";
     $resultTasks = $conn->query($query);
 
     $query = "SELECT item_id,part_name FROM Stock";
     $resultParts = $conn->query($query);
 ?>
-<form action = 'processEditJob.php' method = 'post'>
+<form action = 'processEditJob.php' method = 'post'><!-- Form for editing jobs with only the mechanic view columns -->
   <div class="form-group">
     <label for="exampleInputEmail1">Job Id: <?php echo $pick_job_id; ?></label>
     <input type="hidden" class="form-control" name="job_id" value= <?php echo $pick_job_id; ?> placeholder="Enter time spent in job">
@@ -50,7 +49,7 @@ if (isset($_POST['update'])) {
   <div class="form-group">
     <label for="updateStatus">Update Status</label>
     <select name="updateStatus"  class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
       <option value='pending'>pending</option>
       <option value='progress'>progress</option>
       <option value='completed'>completed</option>
@@ -59,7 +58,7 @@ if (isset($_POST['update'])) {
   <div class="form-group">
     <label for="addStock">Add Part</label>
     <select name="addStock"  class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultParts->fetch_assoc()) {
       echo "<option value=$row[item_id]>$row[part_name]</option>";
@@ -70,7 +69,7 @@ if (isset($_POST['update'])) {
   <div class="form-group">
     <label for="addTask">Add Task</label>
     <select name="addTask"  class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultTasks->fetch_assoc()) {
       echo "<option value=$row[task_id]>$row[description]</option>";

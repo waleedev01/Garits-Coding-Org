@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -9,6 +11,9 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: ../login.php");
     exit;
 }
+
+$query = "SELECT * FROM Staff";
+$result = $conn->query($query);
 ?>
  
 <!DOCTYPE html>
@@ -27,27 +32,35 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <body>
     <h1 class="my-5">Hi, <b><?php echo htmlspecialchars($_SESSION["username"]); ?></b>. Welcome to GARITS.</h1>
     <p>
+        <!-- Page Heading and Title-->
         <a href="../logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
         <a href="../<?php echo $role ?>.php" class="btn btn-info ml-3">Open Dashboard</a>
-    <form action='' method='post'>
+    <form action='' method='post'><!-- Form for editing the staff account -->
         <div class="form-row">
         <div class="form-group col-md-6">
-        <label for="inputUsername">Username</label>
-        <input type="text" class="form-control" required name="inputUsername" placeholder="Username">
+        <label for="inputUsername">Choose User</label>
+        <select name="inputUsername"  class="form-control" required>
+        <option selected required disabled value="">Choose...</option>
+        <?php 
+        while($row = $result->fetch_assoc()) {
+        echo "<option value=$row[username]>$row[username]</option>";
+        } 
+        ?>
+    </select>
         </div>
         <div class="form-group col-md-6">
         <label for="inputPassword">Password</label>
-        <input type="password" class="form-control" required name="inputPassword" placeholder="Password">
+        <input type="password" class="form-control"  name="inputPassword" placeholder="Password">
         </div>
     </div>
     <div class="form-row">
         <div class="form-group col-md-6">
         <label for="inputEmail">Email</label>
-        <input type="email" class="form-control" required name="inputEmail" placeholder="Email">
+        <input type="email" class="form-control"  name="inputEmail" placeholder="Email">
         </div>
         <div class="form-group col-md-6">
         <label for="inputName">Name</label>
-        <input type="text" class="form-control" required name="inputName" placeholder="Name">
+        <input type="text" class="form-control"  name="inputName" placeholder="Name">
         </div>
     </div>
     <div class="form-group">
@@ -64,25 +77,43 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <button type="submit" name = "createAccount" class="btn btn-primary">Edit Account</button>
   <form>
 <?php
+
+//if form has been submitted
 if (isset($_POST['createAccount'])) {
+    //get all the values
     $username = $_POST['inputUsername'];
     $email = $_POST['inputEmail'];
     $password = $_POST['inputPassword'];
     $role = $_POST['inputRole'];
     $name = $_POST['inputName'];
-
     $hashed_login = md5($password);
-    $query = "SELECT username FROM Staff where username = '$username'";
-    $result = $conn->query($query);
-    if(mysqli_num_rows($result) < 1){//code by me to check if the username exists
-        echo "<script language='javascript'>
-                alert('Username does not exist in the database');
-              </script>";
-    }
-    else{
-        $query = "UPDATE Staff SET password='$hashed_login', name='$name', role = '$role', email = '$email' where username = '$username'";
-        $result = $conn->query($query);
-        echo "<script type='text/javascript'>alert('Account Updated');</script>";
-    }
+
+     //update queries that updates columns that has been inputted. Check if input is not null.
+     if($email!=null){
+        $query = "UPDATE Staff SET email = '$email' where username='$username'";
+        $result = mysqli_query($conn, $query);
+      }
+  
+      if($password!=null){
+        $query = "UPDATE Staff SET password = '$hashed_login' where username='$username'";
+        $result = mysqli_query($conn, $query);
+      }
+
+      if($role!=null){
+        $query = "UPDATE Staff SET role = '$role' where username='$username'";
+        $result = mysqli_query($conn, $query);
+      }
+
+      if($name!=null){
+        $query = "UPDATE Staff SET name = '$name' where username='$username'";
+        $result = mysqli_query($conn, $query);
+      }
+    
+      //alert
+      echo "<script language='javascript'>
+      alert('Account Updated')
+      </script>";
+      echo "<meta http-equiv='refresh' content='0'>";
+
        
 }

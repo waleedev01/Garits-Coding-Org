@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -30,7 +32,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="logout.php" class="btn btn-danger ml-3">Sign Out of Your Account</a>
 
     <div class=card-deck>
-
+    <!-- Cards for each task-->
     <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
         <div class="card-header">Create Staff Account</div>
         <div class="card-body">

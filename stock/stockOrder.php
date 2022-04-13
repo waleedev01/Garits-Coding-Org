@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "../config.php";
@@ -29,21 +31,18 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <meta charset="UTF-8">
 
 <?php
-if (isset($_POST['update'])) {
-    $pick_job_id = $_POST['update'];   
-}
-    $query = "SELECT customer_id,name,surname FROM Customer";
+    $query = "SELECT customer_id,name,surname FROM Customer";//get customer list
     $resultCustomers = $conn->query($query);
 
-    $query = "SELECT item_id,part_name FROM Stock";
+    $query = "SELECT item_id,part_name FROM Stock";//get stock item
     $resultParts = $conn->query($query);
 ?>
+<!-- Form for selling spare parts-->
 <form action = '' method = 'get'>
-  
     <div class="form-group">
     <label for="name">Select user</label>
     <select name="name" required class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultCustomers->fetch_assoc()) {
       echo "<option value=$row[customer_id]>$row[name] $row[surname]</option>";
@@ -54,10 +53,10 @@ if (isset($_POST['update'])) {
     <div class="form-group">
     <label for="addStock">Add Part</label>
     <select name="addStock" required class="form-control" required>
-      <option selected disabled>Choose...</option>
+      <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultParts->fetch_assoc()) {
-      echo "<option value=$row[item_id]>$row[part_name]</option>";
+      echo "<option value=$row[item_id]>$row[part_name] $row[price]</option>";
     } 
     ?>
     </select>
@@ -68,8 +67,9 @@ if (isset($_POST['update'])) {
 
 <?php
 
+//if order has been submitted
 if (isset($_GET['stockOrder'])) {
-    $customer_id = $_GET['name'];
+    $customer_id = $_GET['name'];//get values
     $item_id = $_GET['addStock'];
     $job_type = 'stock_order';
     $status = 'completed';
@@ -78,7 +78,7 @@ if (isset($_GET['stockOrder'])) {
     $time_spent = null;
     $registration_number = null;
     $username = null;
-
+    //insert a job of type stock_order
     $query = "INSERT INTO Job (job_type,status,estimate_amount,book_in_date,time_spent,customer_id,registration_number,username) VALUES (?,?,?,?,?,?,?,?)";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('ssdsdiss', $job_type, $status,$estimate_amount,$book_in_date,$time_spent,$customer_id,$registration_number,$username);
@@ -88,6 +88,7 @@ if (isset($_GET['stockOrder'])) {
 
     $last_id = mysqli_insert_id($conn);
     
+    //update stock_used table
     $query = "INSERT INTO Stock_used (job_id,item_id,date_used) VALUES (?,?,?)";
     $stmt = $conn->prepare($query);
     $date = date("Y-m-d");
@@ -96,21 +97,22 @@ if (isset($_GET['stockOrder'])) {
     $stmt->execute();
     $row = $stmt->affected_rows;
    
+    //get product quantity
     $query_stock_quantity = "SELECT quantity FROM Stock WHERE item_id = '$item_id'";
     $res_stock= mysqli_query($conn,$query_stock_quantity) or die(mysql_error());
     while ($row = mysqli_fetch_assoc($res_stock)) 
             $quantity = $row['quantity'];
-    $newQuantity = $quantity-1;
+    $newQuantity = $quantity-1;//decrement quantity
     try {
-      // First of all, let's begin a transaction
+      //begin a transaction
       $conn->begin_transaction();
       
-      // A set of queries; if one fails, an exception should be thrown
+      // A set of queries; if one fails, an exception is thrown
       $conn->query("SELECT quantity FROM Stock WHERE item_id = '$item_id'");
-      $conn->query("UPDATE Stock SET quantity = '$newQuantity' where item_id = '$item_id'");
+      $conn->query("UPDATE Stock SET quantity = '$newQuantity' where item_id = '$item_id'");//update quantity query
       
       // If we arrive here, it means that no exception was thrown
-      // i.e. no query has failed, and we can commit the transaction
+
       $conn->commit();
   } catch (\Throwable $e) {
       // An exception has been thrown

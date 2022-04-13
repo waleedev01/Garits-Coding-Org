@@ -35,7 +35,7 @@
 </style>
 </head>
 <body>
-<div class="login-form">
+<div class="login-form"><!-- form for logging in the system -->
     <form action="processLogin.php" method="post">
         <h2 class="text-center">Log in</h2>       
         <div class="form-group">

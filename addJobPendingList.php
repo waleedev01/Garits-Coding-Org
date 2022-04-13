@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE); 
 // Initialize the session
 session_start();
 require_once "config.php";
@@ -30,14 +32,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 <?php
 
-$query = "SELECT * FROM Job where status!='completed' and status!='pending' and job_type!='stock_order'";
+$query = "SELECT * FROM Job where status!='completed' and status!='pending' and job_type!='stock_order'";//query for selecting not completed jobs
 $resultJobs = $conn->query($query);
 ?>
-<form action = '' method = 'post'>
+<form action = '' method = 'post'><!--Form for adding a job from pending list-->
   <div class="form-group">
     <label for="chooseJob">Choose Job</label>
     <select name="chooseJob"  class="form-control" required>
-    <option selected disabled>Choose...</option>
+    <option selected disabled value="">Choose...</option>
     <?php 
     while($row = $resultJobs->fetch_assoc()) {
       echo "<option value=$row[job_id]>$row[job_id] $row[status] $row[book_in_date] </option>";
@@ -49,9 +51,11 @@ $resultJobs = $conn->query($query);
   <button type="submit" name='addPendingList' class="btn btn-primary">Submit</button>
 </form>
 <?php
+
+//check if form has been submitted
 if (isset($_POST['addPendingList'])) {
-    $job_id = $_POST['chooseJob'];
-    $query = "UPDATE Job SET status='pending' where job_id = '$job_id'";
+    $job_id = $_POST['chooseJob'];//get job it
+    $query = "UPDATE Job SET status='pending' where job_id = '$job_id'";//update that job status to pending
     $result= mysqli_query($conn, $query);
     $location="$role.php"; // If role is admin this will be admin.php, if student this will be student.php and more.
     echo "<script language='javascript'>
